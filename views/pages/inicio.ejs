@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <style>
+        /* Reset e Estilos Gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header-container {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            background: #11114e;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Menu Hambúrguer - Posicionado à esquerda */
+        .hamburger-menu {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            height: 40px;
+            width: 40px;
+            position: relative;
+            z-index: 100;
+            margin-right: 15px;
+        }
+
+        .hamburger-icon {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ecf0f1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-icon:before,
+        .hamburger-icon:after {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ecf0f1;
+            position: absolute;
+            left: 0;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-icon:before {
+            top: -8px;
+        }
+
+        .hamburger-icon:after {
+            top: 8px;
+        }
+
+        .hamburger-menu.active .hamburger-icon {
+            background: transparent;
+        }
+
+        .hamburger-menu.active .hamburger-icon:before {
+            transform: translateY(8px) rotate(45deg);
+            background: #e74c3c;
+        }
+
+        .hamburger-menu.active .hamburger-icon:after {
+            transform: translateY(-8px) rotate(-45deg);
+            background: #e74c3c;
+        }
+
+        /* Título ajustado */
+        .page-title {
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0 auto 0 0;
+            padding-left: 20px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: max-content;
+        }
+
+        /* Barra de Pesquisa - Posicionada à direita */
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: #34495e;
+            border-radius: 30px;
+            padding: 5px 15px;
+            transition: all 0.3s;
+            margin-left: auto;
+        }
+
+        .search-container:focus-within {
+            box-shadow: 0 0 0 2px #3498db;
+        }
+
+        .search-input {
+            border: none;
+            background: transparent;
+            color: #ecf0f1;
+            padding: 8px;
+            width: 180px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-input::placeholder {
+            color: #bdc3c7;
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-icon {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #ecf0f1;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Menu de Navegação - Agora como menu lateral */
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 250px;
+            height: 100vh;
+            background: #1a3775;
+            transition: left 0.4s ease;
+            z-index: 5;
+            padding-top: 80px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            padding: 20px;
+        }
+
+        .nav-menu li {
+            margin-bottom: 15px;
+        }
+
+        .nav-menu a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            display: block;
+            padding: 12px 15px;
+            border-radius: 5px;
+        }
+
+        .nav-menu a:hover {
+            color: #3498db;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Overlay para quando o menu estiver aberto */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 4;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <!-- Menu Hambúrguer -->
+            <button class="hamburger-menu" aria-label="Abrir menu">
+                <span class="hamburger-icon"></span>
+            </button>
+
+            <!-- Título "ESTOQUE" -->
+            <h1 class="page-title">ESTOQUE</h1>
+
+            <!-- Barra de Pesquisa -->
+            <div class="search-container">
+                <input type="text" placeholder="Pesquisar..." class="search-input">
+                <button class="search-button" aria-label="Pesquisar">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu de Navegação Lateral -->
+    <nav class="nav-menu">
+        <ul>
+            <li><a href="/inicio">Início</a></li>
+            <li><a href="/cadastro-produtos">Cadastrar Produtos</a></li>
+            <li><a href="/saida-estoque">Saída de Estoque</a></li>
+            <li><a href="/relatorios">Relatórios de Estoque</a></li>
+            <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
+            <li><a href="/cadastro">Sair da Conta</a></li>
+        </ul>
+    </nav>
+
+    <!-- Overlay para fechar o menu ao clicar fora -->
+    <div class="overlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const navMenu = document.querySelector('.nav-menu');
+            const overlay = document.querySelector('.overlay');
+
+            hamburgerMenu.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            // Fechar menu ao clicar no overlay ou em um item
+            overlay.addEventListener('click', () => {
+                hamburgerMenu.classList.remove('active');
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            document.querySelectorAll('.nav-menu a').forEach(item => {
+                item.addEventListener('click', () => {
+                    hamburgerMenu.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
