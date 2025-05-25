@@ -3,7 +3,7 @@ require('dotenv').config();
 const pool=new Pool({
 user:'postgres',
 host:'localhost',
-database:'inventory_system_controll',
+database:'estoque_bd',
 password:'root',
 port:5432
 });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -211,8 +212,74 @@
             opacity: 1;
             visibility: visible;
         }
+
+        /* Novos estilos para a tabela */
+        .main-content {
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .products-table th {
+            background-color: #11114e;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .products-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            background: white;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .quantidade-low {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .quantidade-normal {
+            color: #27ae60;
+        }
+
+        .uppercase-input {
+            text-transform: uppercase;
+        }
+
+        .uppercase-input::placeholder {
+            text-transform: none;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -226,11 +293,12 @@
 
             <!-- Barra de Pesquisa -->
             <div class="search-container">
-                <input type="text" placeholder="Pesquisar..." class="search-input">
+                <input type="text" placeholder="Pesquisar..." class="search-input" class="uppercase-input"
+                    oninput="this.value = this.value.toUpperCase()">
                 <button class="search-button" aria-label="Pesquisar">
                     <svg class="search-icon" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="M21 21l-4.35-4.35"/>
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
                     </svg>
                 </button>
             </div>
@@ -252,13 +320,61 @@
     <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Marca</th>
+                    <th>Fornecedor</th>
+                    <th>Quantidade</th>
+                    <th>Validade</th>
+                    <th>Data de Entrada</th>
+                </tr>
+            </thead>
+            <tbody id="produtosTableBody">
+                <% if (typeof produtos !=='undefined' && produtos.length> 0) { %>
+                    <% produtos.forEach(produto=> { %>
+                        <tr data-nome="<%= produto.nome.toLowerCase() %>"
+                            data-marca="<%= produto.marca.toLowerCase() %>"
+                            data-fornecedor="<%= produto.fornecedor.toLowerCase() %>">
+                            <td class="produto-nome">
+                                <%= produto.nome %>
+                            </td>
+                            <td class="produto-marca">
+                                <%= produto.marca %>
+                            </td>
+                            <td class="produto-fornecedor">
+                                <%= produto.fornecedor %>
+                            </td>
+                            <td class="<%= produto.quantidade < 10 ? 'quantidade-low' : 'quantidade-normal' %>">
+                                <%= produto.quantidade %>
+                            </td>
+                            <td>
+                                <%= produto.data_validade %>
+                            </td>
+                            <td>
+                                <%= produto.data_entrada %>
+                            </td>
+                        </tr>
+                        <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="no-results">Nenhum produto cadastrado no estoque.</td>
+                                </tr>
+                                <% } %>
+            </tbody>
+        </table>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const hamburgerMenu = document.querySelector('.hamburger-menu');
             const navMenu = document.querySelector('.nav-menu');
             const overlay = document.querySelector('.overlay');
 
-            hamburgerMenu.addEventListener('click', function() {
+            hamburgerMenu.addEventListener('click', function () {
                 this.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
@@ -279,6 +395,82 @@
                 });
             });
         });
+
+        // Função para pesquisa em tempo real
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.querySelector('.search-input');
+            const produtoRows = document.querySelectorAll('#produtosTableBody tr');
+
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase().trim();
+                let hasResults = false;
+
+                produtoRows.forEach(row => {
+                    if (row.classList.contains('no-results')) return;
+
+                    const produtoNome = row.getAttribute('data-nome');
+                    const produtoMarca = row.getAttribute('data-marca');
+                    const produtoFornecedor = row.getAttribute('data-fornecedor');
+
+                    const nomeElement = row.querySelector('.produto-nome');
+                    const marcaElement = row.querySelector('.produto-marca');
+                    const fornecedorElement = row.querySelector('.produto-fornecedor');
+
+                    const nomeOriginal = nomeElement.textContent;
+                    const marcaOriginal = marcaElement.textContent;
+                    const fornecedorOriginal = fornecedorElement.textContent;
+
+                    // Remove highlights anteriores
+                    nomeElement.innerHTML = nomeOriginal;
+                    marcaElement.innerHTML = marcaOriginal;
+                    fornecedorElement.innerHTML = fornecedorOriginal;
+
+                    if (searchTerm === '') {
+                        row.style.display = '';
+                        hasResults = true;
+                    } else if (produtoNome.includes(searchTerm) ||
+                        produtoMarca.includes(searchTerm) ||
+                        produtoFornecedor.includes(searchTerm)) {
+                        row.style.display = '';
+                        hasResults = true;
+
+                        // Destacar o texto correspondente em todos os campos
+                        const regex = new RegExp(searchTerm, 'gi');
+
+                        nomeElement.innerHTML = nomeOriginal.replace(regex, match =>
+                            `<span class="highlight">${match}</span>`
+                        );
+
+                        marcaElement.innerHTML = marcaOriginal.replace(regex, match =>
+                            produtoMarca.includes(searchTerm) ? `<span class="highlight">${match}</span>` : match
+                        );
+
+                        fornecedorElement.innerHTML = fornecedorOriginal.replace(regex, match =>
+                            produtoFornecedor.includes(searchTerm) ? `<span class="highlight">${match}</span>` : match
+                        );
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Mostrar mensagem se não houver resultados
+                const noResults = document.querySelector('.no-results');
+                const tbody = document.getElementById('produtosTableBody');
+
+                if (!hasResults) {
+                    if (!noResults) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = '<td colspan="6" class="no-results">Nenhum produto encontrado.</td>';
+                        tbody.appendChild(tr);
+                    } else if (noResults.parentNode.style.display === 'none') {
+                        noResults.parentNode.style.display = '';
+                    }
+                } else if (noResults) {
+                    noResults.parentNode.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
+
 </html>

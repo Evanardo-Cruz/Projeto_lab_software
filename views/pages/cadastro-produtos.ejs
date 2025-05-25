@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Reset e Estilos Gerais */
         * {
@@ -340,7 +341,7 @@
     <main class="main-content">
         <h1>Cadastrar Produtos</h1>
 
-        <form action="#" method="post">
+        <form action="/cadastro-produtos" method="post">
             <div class="form-group">
                 <label for="nome">Nome do Produto</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite o nome do produto" class="uppercase-input"
@@ -359,29 +360,43 @@
             </div>
 
             <div class="form-group">
-                <label for="codigo">Código de Barras</label>
-                <input type="text" id="codigo" name="codigo" placeholder="Digite o código de barras" required>
+                <label for="marca">Fornecedor</label>
+                <input type="text" id="fornecedor" name="fornecedor" placeholder="Digite a marca do produto" class="uppercase-input"
+                    oninput="this.value = this.value.toUpperCase()" required>
             </div>
 
             <div class="form-group">
-                <label for="descricao">Descrição do Produto</label>
-                <textarea id="descricao" name="descricao" placeholder="Descreva o produto aqui..." required></textarea>
+                <label for="marca">Data de Validade</label>
+                <input type="date" id="data_de_validade" name="data_de_validade" required>
             </div>
 
-            <div class="form-group">
-                <label for="preco">Preço</label>
-                <div class="price-container">
-                    <input type="number" id="preco" name="preco" step="0.01" min="0" placeholder="0,00" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-submit">Cadastrar Produto</button>
+            <button type="submit" class="btn-submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sucessoModal">Cadastrar Produto</button>
         </form>
     </main>
+
+    <!-- Modal de sucesso -->
+    <div class="modal fade" id="sucessoModal" tabindex="-1" aria-labelledby="sucessoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sucessoModalLabel">Sucesso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Produto cadastrado com sucesso!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const hamburgerMenu = document.querySelector('.hamburger-menu');

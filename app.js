@@ -31,9 +31,32 @@ app.get('/cadastro', (req, res) => {
     res.render('pages/cadastro');
 });
 
-app.get('/inicio', (req, res) => {
+/*app.get('/inicio', (req, res) => {
     res.render('pages/inicio');
+});*/
+app.get('/inicio', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT p.id, p.nome, p.marca, p.fornecedor, 
+                   p.data_validade, p.data_entrada, i.quantidade
+            FROM produtos p
+            JOIN itens i ON p.id = i.id_prod
+            ORDER BY p.data_entrada DESC
+        `);
+
+        const produtos = result.rows.map(produto => ({
+            ...produto,
+            data_validade: formatarData(produto.data_validade),
+            data_entrada: formatarData(produto.data_entrada)
+        }));
+
+        res.render('pages/inicio', { produtos });
+    } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+        res.status(500).send("Erro ao carregar página inicial");
+    }
 });
+
 
 app.get('/cadastro-produtos', (req, res) => {
     res.render('pages/cadastro-produtos');
@@ -204,24 +227,40 @@ app.post('/verificar-login', async (req, res) => {
 });
 
 app.post('/cadastro-produtos', async (req, res) => {
-
     try {
-        const { nome, marca, codigo_barras, preco, quantidade } = req.body;
-        // 3. Inserir no banco (SINTAXE CORRIGIDA)
-        await pool.query(
-            'INSERT INTO produtos (nome, marca, codigo_barras, preco_venda, quantidade_estoque) VALUES ($1, $2, $3, $4, $5)',
-            [nome, marca, codigo_barras, preco, quantidade]
-        );
+        const { nome, marca, quantidade, fornecedor, data_de_validade } = req.body;
 
-        // 4. Redirecionar (APENAS UMA VEZ)
-        res.redirect('/inicio');
+        // Pega a data atual automaticamente para data_entrada
+        const data_entrada = new Date();
 
+        // 1. Inserir o produto na tabela produtos
+        const insertProdutoQuery = `
+            INSERT INTO produtos (nome, marca, fornecedor, data_validade, data_entrada)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING id
+        `;
+        const result = await pool.query(insertProdutoQuery, [
+            nome, marca, fornecedor, data_de_validade, data_entrada
+        ]);
+
+        const id_prod = result.rows[0].id;
+
+        // 2. Inserir a quantidade na tabela itens com o id do produto recém-inserido
+        const insertItemQuery = `
+            INSERT INTO itens (id_prod, quantidade)
+            VALUES ($1, $2)
+        `;
+        await pool.query(insertItemQuery, [id_prod, quantidade]);
+
+        // 3. Redirecionar após cadastro
+        res.redirect('/cadastro-produtos'); // ou outra rota apropriada
 
     } catch (error) {
         console.error("Erro no cadastro:", error);
         res.status(500).send("Erro ao cadastrar produto");
     }
 });
+
 
 app.listen(port, () => {
     console.log("Servidor rodando na porta:", port)
