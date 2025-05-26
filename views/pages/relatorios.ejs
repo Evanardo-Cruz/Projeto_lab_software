@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Reset e Estilos Gerais */
         * {
@@ -211,8 +213,86 @@
             opacity: 1;
             visibility: visible;
         }
+
+        .main-content {
+            padding: 40px 20px;
+            margin-top: 30px;
+            background-color: #f5f5f5;
+        }
+
+        .report-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .report-title {
+            color: #11114e;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .table-responsive {
+            margin-top: 25px;
+        }
+
+        .table th {
+            background-color: #11114e;
+            color: white;
+            padding: 16px;
+            font-weight: 500;
+        }
+
+        .table td {
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .badge-primary {
+            background-color: #11114e;
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            border-radius: 12px;
+        }
+
+        .highlight-card {
+            border-left: 4px solid #11114e;
+            transition: all 0.3s;
+            margin-bottom: 40px;
+            background-color: #fff;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .time-period {
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .list-group-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            border: none;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -222,18 +302,8 @@
             </button>
 
             <!-- Título "ESTOQUE" -->
-            <h1 class="page-title">ESTOQUE</h1>
+            <h1 class="page-title">Relatórios</h1>
 
-            <!-- Barra de Pesquisa -->
-            <div class="search-container">
-                <input type="text" placeholder="Pesquisar..." class="search-input">
-                <button class="search-button" aria-label="Pesquisar">
-                    <svg class="search-icon" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="M21 21l-4.35-4.35"/>
-                    </svg>
-                </button>
-            </div>
         </div>
     </header>
 
@@ -249,26 +319,159 @@
         </ul>
     </nav>
 
-     <main>
-        <h1>relatorios: Em construção</h1>
-    </main>
-
     <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
+    <main class="main-content">
+        <div class="container">
+            <!-- Seção de destaques -->
+            <div class="row mb-5">
+                <div class="col-md-4">
+                    <div class="card highlight-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Produtos mais vendidos</h5>
+                            <p class="time-period">Últimos 7 dias</p>
+                            <ol class="list-group list-group-numbered">
+                                <% if(topSemana.length> 0) { %>
+                                    <% topSemana.forEach((produto, index)=> { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">
+                                                    <%= produto.nome %>
+                                                </div>
+                                                <%= produto.marca %>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill badge-primary">
+                                                <%= produto.total_saidas %>
+                                            </span>
+                                        </li>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <li class="list-group-item">Nenhuma saída esta semana</li>
+                                                <% } %>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card highlight-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Produtos mais vendidos</h5>
+                            <p class="time-period">Últimos 30 dias</p>
+                            <ol class="list-group list-group-numbered">
+                                <% if(topMes.length> 0) { %>
+                                    <% topMes.forEach((produto, index)=> { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">
+                                                    <%= produto.nome %>
+                                                </div>
+                                                <%= produto.marca %>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill badge-primary">
+                                                <%= produto.total_saidas %>
+                                            </span>
+                                        </li>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <li class="list-group-item">Nenhuma saída este mês</li>
+                                                <% } %>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card highlight-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Produtos mais vendidos</h5>
+                            <p class="time-period">Últimos 12 meses</p>
+                            <ol class="list-group list-group-numbered">
+                                <% if(topAno.length> 0) { %>
+                                    <% topAno.forEach((produto, index)=> { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">
+                                                    <%= produto.nome %>
+                                                </div>
+                                                <%= produto.marca %>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill badge-primary">
+                                                <%= produto.total_saidas %>
+                                            </span>
+                                        </li>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <li class="list-group-item">Nenhuma saída este ano</li>
+                                                <% } %>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Histórico de saídas -->
+            <div class="report-section">
+                <h2 class="report-title">Histórico de Saídas Recentes</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Produto</th>
+                                <th>Marca</th>
+                                <th>Quantidade</th>
+                                <th>Usuário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(historico.length> 0) { %>
+                                <% historico.forEach(saida=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= saida.data_formatada %>
+                                        </td>
+                                        <td>
+                                            <%= saida.nome %>
+                                        </td>
+                                        <td>
+                                            <%= saida.marca %>
+                                        </td>
+                                        <td>
+                                            <%= saida.quantidade %>
+                                        </td>
+                                        <td>
+                                            <%= saida.usuario %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="5" class="text-center">Nenhuma saída registrada</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const hamburgerMenu = document.querySelector('.hamburger-menu');
             const navMenu = document.querySelector('.nav-menu');
             const overlay = document.querySelector('.overlay');
 
-            hamburgerMenu.addEventListener('click', function() {
+            hamburgerMenu.addEventListener('click', function () {
                 this.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
             });
 
-            // Fechar menu ao clicar no overlay ou em um item
             overlay.addEventListener('click', () => {
                 hamburgerMenu.classList.remove('active');
                 navMenu.classList.remove('active');
@@ -285,4 +488,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -31,9 +31,6 @@ app.get('/cadastro', (req, res) => {
     res.render('pages/cadastro');
 });
 
-/*app.get('/inicio', (req, res) => {
-    res.render('pages/inicio');
-});*/
 app.get('/inicio', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -66,8 +63,69 @@ app.get('/saida-estoque', (req, res) => {
     res.render('pages/saida-estoque');
 });
 
-app.get('/relatorios', (req, res) => {
-    res.render('pages/relatorios');
+// Adicione estas rotas no seu app.js
+
+app.get('/relatorios', async (req, res) => {
+    try {
+        // Relatório de produtos mais vendidos na semana
+        const topSemana = await pool.query(`
+            SELECT p.nome, p.marca, SUM(s.quantidade) as total_saidas
+            FROM saidas s
+            JOIN itens i ON s.id_item = i.id
+            JOIN produtos p ON i.id_prod = p.id
+            WHERE s.data >= NOW() - INTERVAL '7 days'
+            GROUP BY p.nome, p.marca
+            ORDER BY total_saidas DESC
+            LIMIT 5
+        `);
+
+        // Relatório de produtos mais vendidos no mês
+        const topMes = await pool.query(`
+            SELECT p.nome, p.marca, SUM(s.quantidade) as total_saidas
+            FROM saidas s
+            JOIN itens i ON s.id_item = i.id
+            JOIN produtos p ON i.id_prod = p.id
+            WHERE s.data >= NOW() - INTERVAL '30 days'
+            GROUP BY p.nome, p.marca
+            ORDER BY total_saidas DESC
+            LIMIT 5
+        `);
+
+        // Relatório de produtos mais vendidos no ano
+        const topAno = await pool.query(`
+            SELECT p.nome, p.marca, SUM(s.quantidade) as total_saidas
+            FROM saidas s
+            JOIN itens i ON s.id_item = i.id
+            JOIN produtos p ON i.id_prod = p.id
+            WHERE s.data >= NOW() - INTERVAL '1 year'
+            GROUP BY p.nome, p.marca
+            ORDER BY total_saidas DESC
+            LIMIT 5
+        `);
+
+        // Histórico de saídas recentes
+        const historico = await pool.query(`
+            SELECT p.nome, p.marca, s.quantidade, u.email as usuario, 
+                   TO_CHAR(s.data, 'DD/MM/YYYY') as data_formatada
+            FROM saidas s
+            JOIN itens i ON s.id_item = i.id
+            JOIN produtos p ON i.id_prod = p.id
+            JOIN usuarios u ON s.id_usuario = u.id
+            ORDER BY s.data DESC
+            LIMIT 10
+        `);
+
+        res.render('pages/relatorios', {
+            topSemana: topSemana.rows,
+            topMes: topMes.rows,
+            topAno: topAno.rows,
+            historico: historico.rows
+        });
+
+    } catch (error) {
+        console.error("Erro ao buscar relatórios:", error);
+        res.status(500).send("Erro ao carregar relatórios");
+    }
 });
 
 app.get('/gerenciar-usuarios', async (req, res) => {
@@ -275,6 +333,63 @@ app.post('/cadastro-produtos', async (req, res) => {
     }
 });
 
+// Adicione esta rota POST no seu app.js, antes do app.listen()
+
+app.post('/saida-estoque', async (req, res) => {
+    try {
+        const { nome, marca, quantidade } = req.body;
+        const id_usuario = 1; // Você precisará implementar a autenticação para pegar o ID do usuário logado
+
+        // 1. Verificar se o produto existe
+        const produtoQuery = await pool.query(`
+            SELECT p.id, i.id as item_id, i.quantidade as estoque
+            FROM produtos p
+            JOIN itens i ON p.id = i.id_prod
+            WHERE p.nome = $1 AND p.marca = $2
+        `, [nome, marca]);
+
+        if (produtoQuery.rows.length === 0) {
+            return res.json({ 
+                success: false, 
+                error: "Produto não encontrado ou marca incorreta" 
+            });
+        }
+
+        const produto = produtoQuery.rows[0];
+        const estoqueAtual = produto.estoque;
+
+        // 2. Verificar se há quantidade suficiente
+        if (estoqueAtual < quantidade) {
+            return res.json({ 
+                success: false, 
+                error: `Quantidade insuficiente. Estoque atual: ${estoqueAtual}` 
+            });
+        }
+
+        // 3. Atualizar o estoque
+        const novaQuantidade = estoqueAtual - quantidade;
+        await pool.query(`
+            UPDATE itens 
+            SET quantidade = $1 
+            WHERE id = $2
+        `, [novaQuantidade, produto.item_id]);
+
+        // 4. Registrar a saída
+        await pool.query(`
+            INSERT INTO saidas (id_item, quantidade, data, id_usuario)
+            VALUES ($1, $2, NOW(), $3)
+        `, [produto.item_id, quantidade, id_usuario]);
+
+        res.json({ success: true });
+
+    } catch (error) {
+        console.error("Erro na saída de estoque:", error);
+        res.status(500).json({ 
+            success: false, 
+            error: "Erro ao processar saída de estoque" 
+        });
+    }
+});
 
 app.listen(port, () => {
     console.log("Servidor rodando na porta:", port)
