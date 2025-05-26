@@ -107,10 +107,8 @@ function formatarData(data) {
     const dia = String(dataObj.getDate()).padStart(2, '0');
     const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
     const ano = dataObj.getFullYear();
-    const horas = String(dataObj.getHours()).padStart(2, '0');
-    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
 
-    return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+    return `${dia}/${mes}/${ano}`; // Removido a parte das horas e minutos
 }
 
 app.get('/sair', (req, res) => {
@@ -230,6 +228,14 @@ app.post('/cadastro-produtos', async (req, res) => {
     try {
         const { nome, marca, quantidade, fornecedor, data_de_validade } = req.body;
 
+        // Validação dos campos
+        if (!nome || !marca || !quantidade || !fornecedor || !data_de_validade) {
+            return res.status(400).json({
+                success: false,
+                error: "Todos os campos são obrigatórios"
+            });
+        }
+
         // Pega a data atual automaticamente para data_entrada
         const data_entrada = new Date();
 
@@ -240,24 +246,32 @@ app.post('/cadastro-produtos', async (req, res) => {
             RETURNING id
         `;
         const result = await pool.query(insertProdutoQuery, [
-            nome, marca, fornecedor, data_de_validade, data_entrada
+            nome,
+            marca,
+            fornecedor,
+            data_de_validade,
+            data_entrada
         ]);
 
         const id_prod = result.rows[0].id;
 
-        // 2. Inserir a quantidade na tabela itens com o id do produto recém-inserido
+        // 2. Inserir a quantidade na tabela itens
         const insertItemQuery = `
             INSERT INTO itens (id_prod, quantidade)
             VALUES ($1, $2)
         `;
         await pool.query(insertItemQuery, [id_prod, quantidade]);
 
-        // 3. Redirecionar após cadastro
-        res.redirect('/cadastro-produtos'); // ou outra rota apropriada
+        // 3. Retornar sucesso
+        res.json({ success: true });
 
     } catch (error) {
         console.error("Erro no cadastro:", error);
-        res.status(500).send("Erro ao cadastrar produto");
+        res.status(500).json({
+            success: false,
+            error: "Erro ao cadastrar produto",
+            dbError: error.message
+        });
     }
 });
 

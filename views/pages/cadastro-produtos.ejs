@@ -302,6 +302,39 @@
             text-transform: none;
         }
 
+        /* Estilo para o input de data - igual aos outros inputs */
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: white;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* Estilo para o foco - igual aos outros inputs */
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Estilo para o ícone do calendário */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            padding: 0;
+            margin-right: 5px;
+            cursor: pointer;
+            filter: brightness(0.7);
+        }
+
+        /* Estilo para quando estiver vazio */
+        input[type="date"]:not(:focus):invalid {
+            color: #999;
+        }
 
         @media (max-width: 600px) {
             .main-content {
@@ -341,7 +374,7 @@
     <main class="main-content">
         <h1>Cadastrar Produtos</h1>
 
-        <form action="/cadastro-produtos" method="post">
+        <form id="produtoForm" action="/cadastro-produtos" method="post">
             <div class="form-group">
                 <label for="nome">Nome do Produto</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite o nome do produto" class="uppercase-input"
@@ -350,27 +383,28 @@
 
             <div class="form-group">
                 <label for="marca">Marca</label>
-                <input type="text" id="marca" name="marca" placeholder="Digite a marca do produto" class="uppercase-input"
-                    oninput="this.value = this.value.toUpperCase()" required>
+                <input type="text" id="marca" name="marca" placeholder="Digite a marca do produto"
+                    class="uppercase-input" oninput="this.value = this.value.toUpperCase()" required>
             </div>
 
             <div class="form-group">
-                <label for="codigo">Quantidade</label>
-                <input type="number" id="quantidade" name="quantidade" placeholder="Digite a quantidade" required>
+                <label for="quantidade">Quantidade</label>
+                <input type="number" id="quantidade" name="quantidade" placeholder="Digite a quantidade" required
+                    min="1">
             </div>
 
             <div class="form-group">
-                <label for="marca">Fornecedor</label>
-                <input type="text" id="fornecedor" name="fornecedor" placeholder="Digite a marca do produto" class="uppercase-input"
-                    oninput="this.value = this.value.toUpperCase()" required>
+                <label for="fornecedor">Fornecedor</label>
+                <input type="text" id="fornecedor" name="fornecedor" placeholder="Digite o fornecedor"
+                    class="uppercase-input" oninput="this.value = this.value.toUpperCase()" required>
             </div>
 
             <div class="form-group">
-                <label for="marca">Data de Validade</label>
+                <label for="data_de_validade">Data de Validade</label>
                 <input type="date" id="data_de_validade" name="data_de_validade" required>
             </div>
 
-            <button type="submit" class="btn-submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sucessoModal">Cadastrar Produto</button>
+            <button type="submit" class="btn-submit">Cadastrar Produto</button>
         </form>
     </main>
 
@@ -386,7 +420,7 @@
                     Produto cadastrado com sucesso!
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="fecharModal">OK</button>
                 </div>
             </div>
         </div>
@@ -424,6 +458,59 @@
                 });
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('produtoForm');
+            const modal = new bootstrap.Modal(document.getElementById('sucessoModal'));
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                try {
+                    // Coletar os dados do formulário
+                    const formData = new FormData(form);
+                    const data = {
+                        nome: formData.get('nome'),
+                        marca: formData.get('marca'),
+                        quantidade: formData.get('quantidade'),
+                        fornecedor: formData.get('fornecedor'),
+                        data_de_validade: formData.get('data_de_validade')
+                    };
+
+                    // Verificar se todos os campos estão preenchidos
+                    if (!data.nome || !data.marca || !data.quantidade || !data.fornecedor || !data.data_de_validade) {
+                        alert('Por favor, preencha todos os campos!');
+                        return;
+                    }
+
+                    // Enviar os dados para o backend
+                    const response = await fetch('/cadastro-produtos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        modal.show();
+
+                        // Configurar evento para quando o modal for fechado
+                        document.getElementById('sucessoModal').addEventListener('hidden.bs.modal', function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert('Erro ao cadastrar produto: ' + (result.error || 'Erro desconhecido'));
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Erro ao enviar formulário');
+                }
+            });
+        });
+
     </script>
 </body>
 
