@@ -391,6 +391,76 @@ app.post('/saida-estoque', async (req, res) => {
     }
 });
 
+// Rota GET para carregar os dados do usuário para edição
+app.get('/editar-usuario/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query(
+            'SELECT id, email, nivel_acesso FROM usuarios WHERE id = $1',
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Erro ao buscar usuário para edição:', error);
+        res.status(500).json({ error: 'Erro ao carregar usuário' });
+    }
+});
+
+// Rota POST para atualizar os dados do usuário
+app.post('/editar-usuario/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { email, nivel_acesso, senha } = req.body;
+
+        // Monta a query de atualização dinamicamente
+        let query = 'UPDATE usuarios SET email = $1, nivel_acesso = $2';
+        let params = [email, nivel_acesso];
+
+        // Se a senha for fornecida, criptografe-a e inclua na query
+        if (senha) {
+            const saltRounds = 10;
+            const senhaCriptografada = await bcrypt.hash(senha, saltRounds);
+            query += ', senha = $3';
+            params.push(senhaCriptografada);
+        }
+
+        query += ' WHERE id = $' + (params.length + 1);
+        params.push(id);
+
+        await pool.query(query, params);
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        res.status(500).json({ success: false, error: 'Erro ao atualizar usuário' });
+    }
+});
+
+// Rota DELETE para excluir um usuário
+app.delete('/usuarios/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query(
+            'DELETE FROM usuarios WHERE id = $1 RETURNING id',
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        res.status(500).json({ success: false, error: 'Erro ao excluir usuário' });
+    }
+});
+
 app.listen(port, () => {
     console.log("Servidor rodando na porta:", port)
 });

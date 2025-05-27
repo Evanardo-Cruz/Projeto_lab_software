@@ -30,7 +30,7 @@
             z-index: 10;
         }
 
-        /* Menu Hambúrguer - Posicionado à esquerda */
+        /* Menu Hambúrguer */
         .hamburger-menu {
             background: none;
             border: none;
@@ -89,7 +89,7 @@
             background: #e74c3c;
         }
 
-        /* Título ajustado */
+        /* Título */
         .page-title {
             color: #ecf0f1;
             font-size: 1.8rem;
@@ -103,7 +103,7 @@
             width: max-content;
         }
 
-        /* Barra de Pesquisa - Posicionada à direita */
+        /* Barra de Pesquisa */
         .search-container {
             display: flex;
             align-items: center;
@@ -152,7 +152,7 @@
             stroke-linejoin: round;
         }
 
-        /* Menu de Navegação - Agora como menu lateral */
+        /* Menu de Navegação Lateral */
         .nav-menu {
             position: fixed;
             top: 0;
@@ -194,7 +194,7 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Overlay para quando o menu estiver aberto */
+        /* Overlay para o menu */
         .overlay {
             position: fixed;
             top: 0;
@@ -231,6 +231,24 @@
             background-color: #f5f5f5;
         }
 
+        /* Estilos para o toast de notificação */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
         /* Responsividade */
         @media (max-width: 768px) {
             .search-container {
@@ -253,9 +271,8 @@
                 <span class="hamburger-icon"></span>
             </button>
 
-            <!-- Título "ESTOQUE" -->
+            <!-- Título -->
             <h1 class="page-title">GERENCIAMENTO DE USUÁRIOS</h1>
-
         </div>
     </header>
 
@@ -267,9 +284,12 @@
             <li><a href="/saida-estoque">Saída de Estoque</a></li>
             <li><a href="/relatorios">Relatórios de Estoque</a></li>
             <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
-            <li><a href="/cadastro">Sair da Conta</a></li>
+            <li><a href="/sair">Sair da Conta</a></li>
         </ul>
     </nav>
+
+    <!-- Overlay para fechar o menu -->
+    <div class="overlay"></div>
 
     <!-- Conteúdo principal -->
     <main style="margin-left: 20px; margin-right: 20px; padding-top: 20px;">
@@ -302,8 +322,6 @@
                             <td style="padding: 12px;">
                                 <button class="edit-btn" data-id="<%= usuario.id %>"
                                     style="background-color: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Editar</button>
-                                <button class="delete-btn" data-id="<%= usuario.id %>"
-                                    style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Excluir</button>
                             </td>
                         </tr>
                         <% }); %>
@@ -312,26 +330,96 @@
         </div>
     </main>
 
-    <!-- Overlay para fechar o menu ao clicar fora -->
-    <div class="overlay"></div>
+    <!-- Modal para edição de usuário -->
+    <div id="edit-user-modal"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
+        <h2>Editar Usuário</h2>
+        <form id="edit-user-form">
+            <input type="hidden" id="edit-user-id">
+            <div style="margin-bottom: 15px;">
+                <label for="edit-email">E-mail:</label>
+                <input type="email" id="edit-email" name="email" required
+                    style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="edit-nivel-acesso">Nível de Acesso:</label>
+                <select id="edit-nivel-acesso" name="nivel_acesso" required
+                    style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                    <option value="administrador">Administrador</option>
+                    <option value="operador">Operador</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="edit-senha">Nova Senha (opcional):</label>
+                <input type="password" id="edit-senha" name="senha" placeholder="Deixe em branco para não alterar"
+                    style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" id="cancel-edit"
+                    style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancelar</button>
+                <button type="submit"
+                    style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal para confirmação de exclusão -->
+    <div id="delete-user-modal"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
+        <h2>Confirmar Exclusão</h2>
+        <p>Tem certeza que deseja excluir o usuário ID <span id="delete-user-id"></span>?</p>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="cancel-delete"
+                style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancelar</button>
+            <button id="confirm-delete"
+                style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Confirmar</button>
+        </div>
+    </div>
+
+    <!-- Overlay para modais -->
+    <div id="modal-overlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;">
+    </div>
+
+    <!-- Toast para notificações -->
+    <div id="toast" class="toast"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const hamburgerMenu = document.querySelector('.hamburger-menu');
             const navMenu = document.querySelector('.nav-menu');
             const overlay = document.querySelector('.overlay');
+            const editModal = document.querySelector('#edit-user-modal');
+            const deleteModal = document.querySelector('#delete-user-modal');
+            const modalOverlay = document.querySelector('#modal-overlay');
+            const editForm = document.querySelector('#edit-user-form');
+            const cancelEditBtn = document.querySelector('#cancel-edit');
+            const cancelDeleteBtn = document.querySelector('#cancel-delete');
+            const confirmDeleteBtn = document.querySelector('#confirm-delete');
+            const toast = document.querySelector('#toast');
 
+            // Função para mostrar notificação toast
+            function showToast(message, duration = 3000) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, duration);
+            }
+
+            // Função para abrir/fechar o menu hamburguer
             hamburgerMenu.addEventListener('click', function () {
                 this.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
             });
 
-            // Fechar menu ao clicar no overlay ou em um item
             overlay.addEventListener('click', () => {
                 hamburgerMenu.classList.remove('active');
                 navMenu.classList.remove('active');
                 overlay.classList.remove('active');
+                closeEditModal();
+                closeDeleteModal();
             });
 
             document.querySelectorAll('.nav-menu a').forEach(item => {
@@ -341,30 +429,122 @@
                     overlay.classList.remove('active');
                 });
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // ... seu código existente ...
+            // Função para abrir o modal de edição
+            function openEditModal(user) {
+                document.querySelector('#edit-user-id').value = user.id;
+                document.querySelector('#edit-email').value = user.email;
+                document.querySelector('#edit-nivel-acesso').value = user.nivel_acesso;
+                document.querySelector('#edit-senha').value = '';
+                editModal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            }
 
-            // Event listeners para editar/excluir usuários
+            // Função para fechar o modal de edição
+            function closeEditModal() {
+                editModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
+            }
+
+            // Função para abrir o modal de exclusão
+            function openDeleteModal(userId) {
+                document.querySelector('#delete-user-id').textContent = userId;
+                deleteModal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            }
+
+            // Função para fechar o modal de exclusão
+            function closeDeleteModal() {
+                deleteModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
+            }
+
+            // Evento para cancelar edição
+            cancelEditBtn.addEventListener('click', closeEditModal);
+
+            // Evento para cancelar exclusão
+            cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+
+            // Event listeners para botões de editar
             document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', async function () {
                     const userId = this.getAttribute('data-id');
-                    // Implemente a lógica de edição aqui
-                    alert(`Editar usuário ID: ${userId}`);
-                    // Exemplo: window.location.href = `/editar-usuario/${userId}`;
+                    try {
+                        const response = await fetch(`/editar-usuario/${userId}`, {
+                            method: 'GET',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const user = await response.json();
+                        if (response.ok) {
+                            openEditModal(user);
+                        } else {
+                            showToast(user.error || 'Erro ao carregar usuário');
+                        }
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        showToast('Erro ao carregar usuário');
+                    }
                 });
             });
 
+            // Evento para salvar alterações
+            editForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const userId = document.querySelector('#edit-user-id').value;
+                const formData = {
+                    email: document.querySelector('#edit-email').value,
+                    nivel_acesso: document.querySelector('#edit-nivel-acesso').value,
+                    senha: document.querySelector('#edit-senha').value || undefined
+                };
+
+                try {
+                    const response = await fetch(`/editar-usuario/${userId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        showToast('Usuário atualizado com sucesso!');
+                        closeEditModal();
+                        window.location.reload();
+                    } else {
+                        showToast(result.error || 'Erro ao atualizar usuário');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showToast('Erro ao atualizar usuário');
+                }
+            });
+
+            // Event listeners para botões de excluir
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function () {
                     const userId = this.getAttribute('data-id');
-                    if (confirm(`Tem certeza que deseja excluir o usuário ID ${userId}?`)) {
-                        // Implemente a lógica de exclusão aqui
-                        alert(`Excluir usuário ID: ${userId} (simular requisição AJAX)`);
-                        // Exemplo: fetch(`/usuarios/${userId}`, { method: 'DELETE' }).then(...);
-                    }
+                    openDeleteModal(userId);
                 });
+            });
+
+            // Evento para confirmar exclusão
+            confirmDeleteBtn.addEventListener('click', async function () {
+                const userId = document.querySelector('#delete-user-id').textContent;
+                try {
+                    const response = await fetch(`/usuarios/${userId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        showToast('Usuário excluído com sucesso!');
+                        closeDeleteModal();
+                        window.location.reload();
+                    } else {
+                        showToast(result.error || 'Erro ao excluir usuário');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showToast('Erro ao excluir usuário');
+                }
             });
         });
     </script>
