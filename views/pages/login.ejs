@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-Br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,8 @@
         }
 
         body {
-            background-color: #11114e; /* Cor de fundo suave */
+            background-color: #11114e;
+            /* Cor de fundo suave */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,16 +29,19 @@
             width: 100%;
             max-width: 500px;
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            /* Sombra suave para dar profundidade */
             text-align: center;
         }
 
         #h1-login {
             font-weight: normal;
             font-size: 36px;
-            color: #333; /* Cor mais suave para o texto */
+            color: #333;
+            /* Cor mais suave para o texto */
             letter-spacing: 2px;
-            margin-bottom: 20px; /* Espaço entre o título e o formulário */
+            margin-bottom: 20px;
+            /* Espaço entre o título e o formulário */
         }
 
         form {
@@ -50,8 +55,10 @@
             border: 1px solid #ddd;
             margin-bottom: 20px;
             font-size: 16px;
-            color: #333; /* Cor do texto dentro dos inputs */
-            background-color: #f9f9f9; /* Cor de fundo suave para os inputs */
+            color: #333;
+            /* Cor do texto dentro dos inputs */
+            background-color: #f9f9f9;
+            /* Cor de fundo suave para os inputs */
         }
 
         .input-1:focus {
@@ -76,12 +83,12 @@
             transform: scale(1.05);
         }
 
-        .label{
+        .label {
             display: flex;
             padding-left: 5px;
         }
 
-        #modal{
+        #modal {
             display: none;
             justify-content: center;
             align-items: center;
@@ -94,15 +101,36 @@
             margin-right: auto;
         }
 
-        #text-modal{
+        #text-modal {
             font-size: 20px;
             font-weight: 400;
         }
 
-        #link{
+        #link {
             margin-top: 15px;
             width: 100%;
             text-align: left;
+        }
+
+        #modal {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 0, 0, 50%);
+            margin-top: 15px;
+            width: 80%;
+            height: 50px;
+            /* Aumentei a altura */
+            border-radius: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #text-modal {
+            font-size: 20px;
+            font-weight: 400;
+            color: rgb(0, 0, 0);
+            /* Adicionei cor branca para melhor contraste */
         }
 
         /* Responsividade */
@@ -118,6 +146,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="div-login-container">
         <!-- Título "LOGIN" acima da caixa de dados -->
@@ -127,10 +156,12 @@
         <form action="/login" method="POST">
             <div>
                 <div class="label"><label for="email">E-MAIL:</label></div>
-                <input type="email" name="email" id="email" class="input-1" placeholder="Digite seu e-mail" required> <br>
+                <input type="email" name="email" id="email" class="input-1" placeholder="Digite seu e-mail" required>
+                <br>
 
                 <div class="label"><label for="senha">SENHA:</label></div>
-                <input type="password" name="senha" id="senha" class="input-1" placeholder="Digite sua senha" required> <br>
+                <input type="password" name="senha" id="senha" class="input-1" placeholder="Digite sua senha" required>
+                <br>
 
                 <input type="submit" value="LOGAR" id="btn-logar">
             </div>
@@ -148,21 +179,29 @@
     <script>
         async function handleLogin(event) {
             event.preventDefault(); // Impede o envio padrão
-            
+
             const form = event.currentTarget.form;
             const email = document.getElementById("email").value;
             const senha = document.getElementById("senha").value;
             const modal = document.getElementById('modal');
+            const modalText = document.getElementById('text-modal');
             const btn = document.getElementById('btn-logar');
-    
+
             // Função para mostrar mensagens no modal
-            const showModal = () => {
+            const showModal = (message) => {
+                modalText.textContent = message;
                 modal.style.display = 'flex';
                 setTimeout(() => modal.style.display = 'none', 4000);
             };
-    
+
+            // Validação dos campos
+            if (!email || !senha) {
+                showModal("Preencha todos os campos obrigatórios!");
+                return; // Sai da função se campos estiverem vazios
+            }
+
             btn.disabled = true;
-    
+
             try {
                 // Verifica credenciais no servidor
                 const response = await fetch('/verificar-login', {
@@ -170,18 +209,17 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, senha })
                 });
-    
+
                 const result = await response.json();
-    
+
                 if (result.error) {
-                    // Mostra erro específico (email não cadastrado ou senha incorreta)
                     showModal(result.error);
                     return;
                 }
-    
+
                 // Login bem-sucedido - redireciona
                 window.location.href = result.redirect || '/';
-    
+
             } catch (error) {
                 console.error("Erro:", error);
                 showModal("Erro na conexão com o servidor");
@@ -189,9 +227,10 @@
                 btn.disabled = false;
             }
         }
-    
+
         // Vincula o evento ao botão de login
         document.getElementById('btn-logar').addEventListener('click', handleLogin);
     </script>
 </body>
+
 </html>

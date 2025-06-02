@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-Br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,8 @@
         }
 
         body {
-            background-color: #11114e; /* Cor de fundo suave */
+            background-color: #11114e;
+            /* Cor de fundo suave */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,16 +29,19 @@
             width: 100%;
             max-width: 500px;
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            /* Sombra suave para dar profundidade */
             text-align: center;
         }
 
         #h1-login {
             font-weight: normal;
             font-size: 36px;
-            color: #333; /* Cor mais suave para o texto */
+            color: #333;
+            /* Cor mais suave para o texto */
             letter-spacing: 2px;
-            margin-bottom: 20px; /* Espaço entre o título e o formulário */
+            margin-bottom: 20px;
+            /* Espaço entre o título e o formulário */
         }
 
         form {
@@ -50,8 +55,10 @@
             border: 1px solid #ddd;
             margin-bottom: 20px;
             font-size: 16px;
-            color: #333; /* Cor do texto dentro dos inputs */
-            background-color: #f9f9f9; /* Cor de fundo suave para os inputs */
+            color: #333;
+            /* Cor do texto dentro dos inputs */
+            background-color: #f9f9f9;
+            /* Cor de fundo suave para os inputs */
         }
 
         .input-1:focus {
@@ -76,7 +83,7 @@
             transform: scale(1.05);
         }
 
-        .label{
+        .label {
             display: flex;
             padding-left: 5px;
         }
@@ -114,14 +121,14 @@
             color: #555;
         }
 
-        .radio-option input:checked + .radio-label {
+        .radio-option input:checked+.radio-label {
             border-color: #1166de;
             background-color: #e1edff;
             color: #1166de;
             font-weight: bold;
         }
 
-        .radio-option input:focus + .radio-label {
+        .radio-option input:focus+.radio-label {
             box-shadow: 0 0 0 3px rgba(17, 102, 222, 0.2);
         }
 
@@ -130,25 +137,36 @@
         }
 
         .modal {
-            display: none; /* Escondido por padrão */
-            position: fixed; /* Fica fixo na tela */
-            z-index: 1; /* Fica acima de outros elementos */
+            display: none;
+            /* Escondido por padrão */
+            position: fixed;
+            /* Fica fixo na tela */
+            z-index: 1;
+            /* Fica acima de outros elementos */
             left: 0;
             top: 0;
-            width: 100%; /* Largura total */
-            height: 100%; /* Altura total */
-            overflow: auto; /* Habilita rolagem se necessário */
-            background-color: rgb(0,0,0); /* Cor de fundo */
-            background-color: rgba(0,0,0,0.4); /* Fundo com opacidade */
+            width: 100%;
+            /* Largura total */
+            height: 100%;
+            /* Altura total */
+            overflow: auto;
+            /* Habilita rolagem se necessário */
+            background-color: rgb(0, 0, 0);
+            /* Cor de fundo */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Fundo com opacidade */
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto; /* Centraliza o modal */
+            margin: 15% auto;
+            /* Centraliza o modal */
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; /* Largura do modal */
-            max-width: 500px; /* Largura máxima do modal */
+            width: 80%;
+            /* Largura do modal */
+            max-width: 500px;
+            /* Largura máxima do modal */
         }
 
         .close {
@@ -165,25 +183,25 @@
             cursor: pointer;
         }
 
-        #modal{
+        #modal {
             display: none;
             justify-content: center;
             align-items: center;
             background-color: rgba(255, 0, 0, 50%);
             margin-top: 15px;
             width: 70%;
-            height: 30px;
+            height: 50px;
             border-radius: 10px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        #text-modal{
+        #text-modal {
             font-size: 20px;
             font-weight: 400;
         }
 
-        #link{
+        #link {
             margin-top: 15px;
             width: 100%;
             text-align: left;
@@ -202,6 +220,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="div-login-container">
         <!-- Título "LOGIN" acima da caixa de dados -->
@@ -211,10 +230,12 @@
         <form action="/cadastro" method="POST">
             <div>
                 <div class="label"><label for="email">E-MAIL:</label></div>
-                <input type="email" name="email" id="email" class="input-1" placeholder="Digite seu e-mail" required> <br>
+                <input type="email" name="email" id="email" class="input-1" placeholder="Digite seu e-mail" required>
+                <br>
 
                 <div class="label"><label for="senha">SENHA:</label></div>
-                <input type="password" name="senha" id="senha" class="input-1" placeholder="Digite sua senha" required> <br>
+                <input type="password" name="senha" id="senha" class="input-1" placeholder="Digite sua senha" required>
+                <br>
 
                 <div class="label"><label>TIPO DE USUÁRIO:</label></div>
                 <div class="radio-group">
@@ -236,47 +257,56 @@
             </div>
 
         </form>
-            <div id="link">
-                <a href="/login">já tenho uma conta</a>
-            </div>
-        
+        <div id="link">
+            <a href="/login">já tenho uma conta</a>
+        </div>
+
     </div>
 
     <script>
         async function handleCadastro(event) {
             event.preventDefault(); // Impede o envio padrão do formulário
-            
+
             const form = event.currentTarget.form; // Acessa o formulário
             const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+            const tipoUsuario = document.querySelector('input[name="tipo_usuario"]:checked');
             const modal = document.getElementById('modal');
             const btn = document.getElementById('btn-logar');
-    
+
             // Configuração do modal
-            const showModal = () => {
+            const showModal = (message = "Esse E-mail já foi cadastrado!") => {
+                document.getElementById('text-modal').textContent = message;
                 modal.style.display = 'flex';
                 setTimeout(() => modal.style.display = 'none', 4000);
             };
-    
+
+            // 1. Validação dos campos obrigatórios
+            if (!email || !senha || !tipoUsuario) {
+                showModal("Preencha todos os campos obrigatórios!");
+                return; // Impede a requisição se algum campo estiver vazio
+            }
+
             btn.disabled = true; // Desabilita o botão durante a verificação
-    
+
             try {
-                // 1. Verifica se o email existe
+                // 2. Verifica se o email existe (somente se os campos estiverem válidos)
                 const checkResponse = await fetch('/verificar-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
-    
+
                 const checkData = await checkResponse.json();
-    
+
                 if (checkData.existe) {
                     showModal();
                     return; // Impede o envio do formulário
                 }
-    
-                // 2. Se o email não existe, envia o formulário
+
+                // 3. Se o email não existe, envia o formulário
                 form.submit();
-    
+
             } catch (error) {
                 console.error("Erro:", error);
                 showModal("Erro ao verificar e-mail");
@@ -284,9 +314,10 @@
                 btn.disabled = false; // Reabilita o botão
             }
         }
-    
+
         // Vincula o evento ao botão de cadastro
         document.getElementById('btn-logar').addEventListener('click', handleCadastro);
     </script>
 </body>
+
 </html>
