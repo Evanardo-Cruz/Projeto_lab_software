@@ -29,7 +29,6 @@ app.use(session({
     }
 }));
 
-
 app.set('view engine', 'ejs');
 
 const port = 3000;
@@ -61,13 +60,12 @@ function ensureAdmin(req, res, next) {
     if (!req.session || !req.session.user) {
         return res.redirect('/login'); // Não autenticado
     }
-    // Verifica se o nível de acesso é 'admin'
-    // IMPORTANTE: O valor 'administrador' na página EJS deve corresponder ao valor 'admin' na sessão.
-    // Mantenha a consistência: se você salva 'admin' no banco, use 'admin' aqui e no EJS.
-    if (req.session.user.nivel_acesso === 'admin') { // CORRIGIDO AQUI: 'administrador' -> 'admin'
-        return next(); // É admin, prossegue
+    // Verifica se o nível de acesso é 'administrador'
+    // CORREÇÃO: Usando 'administrador' para consistência com o frontend e o banco de dados.
+    if (req.session.user.nivel_acesso === 'administrador') {
+        return next(); // É administrador, prossegue
     }
-    // Não é admin, envia erro ou redireciona
+    // Não é administrador, envia erro ou redireciona
     res.status(403).send('Acesso negado. Você não tem permissão para acessar esta página.'); // Ou res.redirect('/inicio'); com uma mensagem
 }
 
@@ -96,7 +94,6 @@ app.get('/cadastro', (req, res) => {
     res.render('pages/cadastro');
 });
 
-
 // Rotas que exigem autenticação
 app.get('/inicio', ensureAuthenticated, async (req, res) => {
     try {
@@ -121,13 +118,59 @@ app.get('/inicio', ensureAuthenticated, async (req, res) => {
     }
 });
 
-
 app.get('/cadastro-produtos', ensureAuthenticated, (req, res) => {
     res.render('pages/cadastro-produtos');
 });
 
 app.get('/saida-estoque', ensureAuthenticated, (req, res) => {
     res.render('pages/saida-estoque');
+});
+
+// Nova rota API para sugestões de produtos (protegida por autenticação)
+app.get('/api/produtos/sugestoes', ensureAuthenticated, async (req, res) => {
+    try {
+        const searchTerm = req.query.q || ''; // Termo de busca
+        const query = `
+            SELECT DISTINCT nome, marca 
+            FROM produtos 
+            WHERE nome ILIKE $1 OR marca ILIKE $1
+            LIMIT 10;
+        `;
+        const result = await pool.query(query, [`%${searchTerm}%`]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Erro ao buscar sugestões de produtos:", error);
+        res.status(500).json({ error: "Erro ao buscar sugestões." });
+    }
+});
+
+// Rota API para buscar informações de estoque de um produto específico
+app.get('/api/produtos/estoque', ensureAuthenticated, async (req, res) => {
+    try {
+        const { nome, marca } = req.query; // Recebe nome e marca da query string
+
+        if (!nome) {
+            return res.status(400).json({ success: false, error: "Nome do produto é obrigatório." });
+        }
+
+        const query = `
+            SELECT p.nome, p.marca, i.quantidade as estoque
+            FROM produtos p
+            JOIN itens i ON p.id = i.id_prod
+            WHERE p.nome ILIKE $1 AND p.marca ILIKE $2
+            LIMIT 1;
+        `;
+        const result = await pool.query(query, [nome, marca || '']); // Adiciona marca ou string vazia para a busca
+
+        if (result.rows.length > 0) {
+            res.json({ success: true, produto: result.rows[0] });
+        } else {
+            res.json({ success: false, error: "Produto não encontrado." });
+        }
+    } catch (error) {
+        console.error("Erro ao buscar estoque do produto:", error);
+        res.status(500).json({ success: false, error: "Erro interno ao buscar estoque." });
+    }
 });
 
 // Rotas que exigem nível de acesso de administrador
@@ -237,7 +280,6 @@ app.get('/editar-usuario/:id', ensureAdmin, async (req, res) => {
     }
 });
 
-
 // --- Rotas POST (Protegidas) ---
 app.post("/cadastro", async (req, res) => {
     try {
@@ -270,7 +312,6 @@ app.post("/cadastro", async (req, res) => {
     }
 });
 
-
 app.post('/login', async (req, res) => {
     const { email, senha } = req.body;
 
@@ -278,8 +319,6 @@ app.post('/login', async (req, res) => {
         const result = await pool.query('SELECT id, email, senha, nivel_acesso FROM usuarios WHERE email = $1', [email]);
 
         if (result.rows.length === 0) {
-            // Em vez de json, você pode redirecionar com uma mensagem de erro na URL para o EJS exibir.
-            // Ex: return res.redirect('/login?error=EmailIncorreto');
             return res.status(401).json({ error: "Email não cadastrado." });
         }
 
@@ -291,7 +330,8 @@ app.post('/login', async (req, res) => {
             req.session.user = {
                 id: usuario.id,
                 email: usuario.email,
-                nivel_acesso: usuario.nivel_acesso // 'admin' ou 'operador'
+                // CORREÇÃO: Armazena o nível de acesso como ele vem do banco de dados
+                nivel_acesso: usuario.nivel_acesso 
             };
             res.redirect('/inicio');
         } else {
@@ -338,6 +378,7 @@ app.post('/verificar-login', async (req, res) => {
         req.session.user = {
             id: user.id,
             email: user.email,
+            // CORREÇÃO: Armazena o nível de acesso como ele vem do banco de dados
             nivel_acesso: user.nivel_acesso
         };
 
@@ -353,7 +394,6 @@ app.post('/verificar-login', async (req, res) => {
         });
     }
 });
-
 
 app.post('/cadastro-produtos', ensureAuthenticated, async (req, res) => {
     try {
@@ -400,7 +440,6 @@ app.post('/cadastro-produtos', ensureAuthenticated, async (req, res) => {
         });
     }
 });
-
 
 app.post('/saida-estoque', ensureAuthenticated, async (req, res) => {
     try {
@@ -506,7 +545,6 @@ app.get('/sair', (req, res) => {
         res.redirect('/login');
     });
 });
-
 
 app.listen(port, () => {
     console.log("Servidor rodando na porta:", port);

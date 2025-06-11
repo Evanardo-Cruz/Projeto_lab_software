@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Estoque</title>
+    <title>Controle de Estoque - Saída</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Reset e Estilos Gerais */
@@ -104,55 +104,6 @@
             width: max-content;
         }
 
-        /* Barra de Pesquisa - Posicionada à direita */
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: #34495e;
-            border-radius: 30px;
-            padding: 5px 15px;
-            transition: all 0.3s;
-            margin-left: auto;
-        }
-
-        .search-container:focus-within {
-            box-shadow: 0 0 0 2px #3498db;
-        }
-
-        .search-input {
-            border: none;
-            background: transparent;
-            color: #ecf0f1;
-            padding: 8px;
-            width: 180px;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .search-input::placeholder {
-            color: #bdc3c7;
-        }
-
-        .search-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-icon {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: #ecf0f1;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
         /* Menu de Navegação - Agora como menu lateral */
         .nav-menu {
             position: fixed;
@@ -226,6 +177,7 @@
 
         .form-group {
             margin-bottom: 15px;
+            position: relative;
         }
 
         label {
@@ -292,34 +244,61 @@
         .uppercase-input::placeholder {
             text-transform: none;
         }
+
+        /* Estilos para o datalist, tentando sobrescrever o padrão do navegador */
+        /* Note: O suporte a estilização de datalist é limitado e varia entre navegadores */
+        datalist {
+            background-color: white;
+            /* Cor de fundo */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        datalist option {
+            padding: 8px 10px;
+            /* Espaçamento interno */
+            color: #333;
+            /* Cor do texto */
+            background-color: white;
+            /* Cor de fundo individual da opção */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        datalist option:hover,
+        datalist option:active {
+            background-color: #f0f0f0;
+            /* Cor de fundo ao passar o mouse/selecionar */
+            color: #11114e;
+            /* Cor do texto ao passar o mouse */
+        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="header-container">
-            <!-- Menu Hambúrguer -->
             <button class="hamburger-menu" aria-label="Abrir menu">
                 <span class="hamburger-icon"></span>
             </button>
 
-            <!-- Título "ESTOQUE" -->
             <h1 class="page-title">SAÍDA DE ESTOQUE</h1>
-
         </div>
     </header>
 
-    <!-- Menu de Navegação Lateral -->
     <nav class="nav-menu">
         <ul>
             <li><a href="/inicio">Início</a></li>
             <li><a href="/cadastro-produtos">Cadastrar Produtos</a></li>
             <li><a href="/saida-estoque">Saída de Estoque</a></li>
             <% if (currentUser && currentUser.nivel_acesso === 'administrador') { %>
-                <li><a href="/relatorios">Relatórios de Estoque</a></li>
-                <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
+            <li><a href="/relatorios">Relatórios de Estoque</a></li>
+            <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
             <% } %>
-            <li><a href="/cadastro">Sair da Conta</a></li>
+            <li><a href="/sair">Sair da Conta</a></li>
         </ul>
     </nav>
 
@@ -332,13 +311,16 @@
             <div class="form-group">
                 <label for="nome">Nome do Produto</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite o nome do produto" class="uppercase-input"
-                    oninput="this.value = this.value.toUpperCase()" required>
+                    oninput="this.value = this.value.toUpperCase()" list="productSuggestions" required>
+                <datalist id="productSuggestions"></datalist>
+                <small class="stock-info" id="nomeStockInfo"></small>
             </div>
 
             <div class="form-group">
                 <label for="marca">Marca</label>
                 <input type="text" id="marca" name="marca" placeholder="Digite a marca do produto"
                     class="uppercase-input" oninput="this.value = this.value.toUpperCase()" required>
+                <small class="stock-info" id="marcaStockInfo"></small>
             </div>
 
             <div class="form-group">
@@ -351,10 +333,8 @@
         </form>
     </main>
 
-    <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
-    <!-- Modal de sucesso -->
     <div class="modal fade" id="sucessoModal" tabindex="-1" aria-labelledby="sucessoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -373,7 +353,6 @@
         </div>
     </div>
 
-    <!-- Modal de erro -->
     <div class="modal fade" id="erroModal" tabindex="-1" aria-labelledby="erroModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -382,8 +361,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body" id="erroModalMessage">
-                    <!-- Mensagem de erro será inserida aqui -->
-                </div>
+                    </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">OK</button>
                 </div>
@@ -405,7 +383,6 @@
                 overlay.classList.toggle('active');
             });
 
-            // Fechar menu ao clicar no overlay ou em um item
             overlay.addEventListener('click', () => {
                 hamburgerMenu.classList.remove('active');
                 navMenu.classList.remove('active');
@@ -420,32 +397,132 @@
                 });
             });
 
-        })
-        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('estoqueForm');
             const sucessoModal = new bootstrap.Modal(document.getElementById('sucessoModal'));
             const erroModal = new bootstrap.Modal(document.getElementById('erroModal'));
+            const nomeInput = document.getElementById('nome');
+            const marcaInput = document.getElementById('marca');
+            const productSuggestionsDatalist = document.getElementById('productSuggestions');
+            const nomeStockInfo = document.getElementById('nomeStockInfo');
+            const marcaStockInfo = document.getElementById('marcaStockInfo');
+
+            let debounceTimeout;
+
+            function debounce(func, delay) {
+                return function (...args) {
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = setTimeout(() => func.apply(this, args), delay);
+                };
+            }
+
+            // Função para buscar e exibir sugestões no datalist
+            const fetchSuggestions = debounce(async function () {
+                const searchTerm = nomeInput.value.trim().toUpperCase();
+                // AQUI está a mudança: Agora a busca começa com 1 ou mais caracteres.
+                if (searchTerm.length < 1) {
+                    productSuggestionsDatalist.innerHTML = '';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/produtos/sugestoes?q=${searchTerm}`);
+                    const suggestions = await response.json();
+
+                    productSuggestionsDatalist.innerHTML = '';
+
+                    if (suggestions.length > 0) {
+                        suggestions.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = `${item.nome} - ${item.marca}`;
+                            option.dataset.nome = item.nome;
+                            option.dataset.marca = item.marca;
+                            productSuggestionsDatalist.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar sugestões:', error);
+                    productSuggestionsDatalist.innerHTML = '';
+                }
+            }, 300);
+
+            // Função para buscar e exibir o estoque de um produto
+            async function checkProductStock(nome, marca) {
+                try {
+                    const response = await fetch(`/api/produtos/estoque?nome=${nome}&marca=${marca}`);
+                    const data = await response.json();
+
+                    if (data.success && data.produto) {
+                        nomeStockInfo.textContent = `Estoque disponível: ${data.produto.estoque}`;
+                        nomeStockInfo.style.color = data.produto.estoque < 10 ? '#e74c3c' : '#27ae60';
+                    } else {
+                        nomeStockInfo.textContent = 'Produto não encontrado ou sem estoque.';
+                        nomeStockInfo.style.color = '#e74c3c';
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar estoque:', error);
+                    nomeStockInfo.textContent = 'Erro ao verificar estoque.';
+                    nomeStockInfo.style.color = '#e74c3c';
+                }
+            }
+
+            nomeInput.addEventListener('input', fetchSuggestions);
+
+            nomeInput.addEventListener('change', async function () {
+                const fullValue = nomeInput.value.trim();
+                let nomeParaBusca = fullValue;
+                let marcaParaBusca = '';
+
+                let selectedOption = Array.from(productSuggestionsDatalist.options).find(option => option.value === fullValue);
+
+                if (selectedOption) {
+                    nomeParaBusca = selectedOption.dataset.nome;
+                    marcaParaBusca = selectedOption.dataset.marca;
+                } else {
+                    const match = fullValue.match(/(.*) - (.*)/);
+                    if (match && match.length === 3) {
+                        nomeParaBusca = match[1].trim();
+                        marcaParaBusca = match[2].trim();
+                    } else {
+                        marcaParaBusca = marcaInput.value.trim();
+                    }
+                }
+
+                nomeInput.value = nomeParaBusca;
+                marcaInput.value = marcaParaBusca;
+
+                if (nomeParaBusca && marcaParaBusca) {
+                    checkProductStock(nomeParaBusca, marcaParaBusca);
+                } else {
+                    nomeStockInfo.textContent = '';
+                }
+            });
+
+            marcaInput.addEventListener('change', function () {
+                const nomePuro = nomeInput.value.trim();
+                const marcaPreenchida = marcaInput.value.trim();
+                if (nomePuro && marcaPreenchida) {
+                    checkProductStock(nomePuro, marcaPreenchida);
+                } else {
+                    nomeStockInfo.textContent = '';
+                }
+            });
 
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 try {
-                    // Coletar os dados do formulário
-                    const formData = new FormData(form);
                     const data = {
-                        nome: formData.get('nome'),
-                        marca: formData.get('marca'),
-                        quantidade: parseInt(formData.get('quantidade'))
+                        nome: nomeInput.value,
+                        marca: marcaInput.value,
+                        quantidade: parseInt(document.getElementById('quantidade').value)
                     };
 
-                    // Verificar se todos os campos estão preenchidos
                     if (!data.nome || !data.marca || !data.quantidade) {
                         document.getElementById('erroModalMessage').textContent = 'Por favor, preencha todos os campos!';
                         erroModal.show();
                         return;
                     }
 
-                    // Enviar os dados para o backend
                     const response = await fetch('/saida-estoque', {
                         method: 'POST',
                         headers: {
@@ -458,22 +535,22 @@
 
                     if (result.success) {
                         sucessoModal.show();
-
-                        // Configurar evento para quando o modal for fechado
                         document.getElementById('sucessoModal').addEventListener('hidden.bs.modal', function () {
                             form.reset();
+                            nomeStockInfo.textContent = '';
+                            marcaStockInfo.textContent = '';
                         });
                     } else {
                         document.getElementById('erroModalMessage').textContent = result.error || 'Erro ao processar saída de estoque';
                         erroModal.show();
                     }
                 } catch (error) {
-                    console.error('Erro:', error);
-                    document.getElementById('erroModalMessage').textContent = 'Erro ao enviar formulário';
-                    erroModal.show();
-                }
+                        console.error('Erro:', error);
+                        document.getElementById('erroModalMessage').textContent = 'Erro ao enviar formulário';
+                        erroModal.show();
+                    }
+                });
             });
-        });
     </script>
 </body>
 
