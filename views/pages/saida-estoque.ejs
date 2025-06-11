@@ -315,8 +315,10 @@
             <li><a href="/inicio">Início</a></li>
             <li><a href="/cadastro-produtos">Cadastrar Produtos</a></li>
             <li><a href="/saida-estoque">Saída de Estoque</a></li>
-            <li><a href="/relatorios">Relatórios de Estoque</a></li>
-            <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
+            <% if (currentUser && currentUser.nivel_acesso === 'administrador') { %>
+                <li><a href="/relatorios">Relatórios de Estoque</a></li>
+                <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
+            <% } %>
             <li><a href="/cadastro">Sair da Conta</a></li>
         </ul>
     </nav>

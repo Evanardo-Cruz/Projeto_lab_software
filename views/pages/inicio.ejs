@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Estoque</title>
     <style>
-        /* Reset e Estilos Gerais */
+        /* (Seu CSS permanece o mesmo) */
         * {
             margin: 0;
             padding: 0;
@@ -283,17 +283,14 @@
 <body>
     <header>
         <div class="header-container">
-            <!-- Menu Hambúrguer -->
             <button class="hamburger-menu" aria-label="Abrir menu">
                 <span class="hamburger-icon"></span>
             </button>
 
-            <!-- Título "ESTOQUE" -->
             <h1 class="page-title">ESTOQUE</h1>
 
-            <!-- Barra de Pesquisa -->
             <div class="search-container">
-                <input type="text" placeholder="Pesquisar..." class="search-input" class="uppercase-input"
+                <input type="text" placeholder="Pesquisar..." class="search-input uppercase-input"
                     oninput="this.value = this.value.toUpperCase()">
                 <button class="search-button" aria-label="Pesquisar">
                     <svg class="search-icon" viewBox="0 0 24 24">
@@ -305,22 +302,23 @@
         </div>
     </header>
 
-    <!-- Menu de Navegação Lateral -->
     <nav class="nav-menu">
         <ul>
             <li><a href="/inicio">Início</a></li>
             <li><a href="/cadastro-produtos">Cadastrar Produtos</a></li>
             <li><a href="/saida-estoque">Saída de Estoque</a></li>
-            <li><a href="/relatorios">Relatórios de Estoque</a></li>
-            <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
-            <li><a href="/cadastro">Sair da Conta</a></li>
+
+            <% if (currentUser && currentUser.nivel_acesso === 'administrador') { %>
+                <li><a href="/relatorios">Relatórios de Estoque</a></li>
+                <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
+            <% } %>
+
+            <li><a href="/sair">Sair da Conta</a></li>
         </ul>
     </nav>
 
-    <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
-    <!-- Conteúdo Principal -->
     <div class="main-content">
         <table class="products-table">
             <thead>
@@ -334,7 +332,7 @@
                 </tr>
             </thead>
             <tbody id="produtosTableBody">
-                <% if (typeof produtos !=='undefined' && produtos.length> 0) { %>
+                <% if (typeof produtos !=='undefined' && produtos.length > 0) { %>
                     <% produtos.forEach(produto=> { %>
                         <tr data-nome="<%= produto.nome.toLowerCase() %>"
                             data-marca="<%= produto.marca.toLowerCase() %>"
@@ -358,12 +356,12 @@
                                 <%= produto.data_entrada %>
                             </td>
                         </tr>
-                        <% }); %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="6" class="no-results">Nenhum produto cadastrado no estoque.</td>
-                                </tr>
-                                <% } %>
+                    <% }); %>
+                <% } else { %>
+                    <tr id="noResultsRow">
+                        <td colspan="6" class="no-results">Nenhum produto cadastrado no estoque.</td>
+                    </tr>
+                <% } %>
             </tbody>
         </table>
     </div>
@@ -380,7 +378,6 @@
                 overlay.classList.toggle('active');
             });
 
-            // Fechar menu ao clicar no overlay ou em um item
             overlay.addEventListener('click', () => {
                 hamburgerMenu.classList.remove('active');
                 navMenu.classList.remove('active');
@@ -394,19 +391,26 @@
                     overlay.classList.remove('active');
                 });
             });
-        });
 
-        // Função para pesquisa em tempo real
-        document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.querySelector('.search-input');
-            const produtoRows = document.querySelectorAll('#produtosTableBody tr');
+            const produtosTableBody = document.getElementById('produtosTableBody');
+            const noResultsRow = document.getElementById('noResultsRow');
+
+            // Inicialmente esconde a linha 'noResultsRow' se houver produtos
+            if (produtosTableBody.children.length > 1 || (produtosTableBody.children.length === 1 && produtosTableBody.children[0].id !== 'noResultsRow')) {
+                const initialNoResultsRow = document.getElementById('noResultsRow');
+                if (initialNoResultsRow) {
+                    initialNoResultsRow.style.display = 'none';
+                }
+            }
+
 
             searchInput.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase().trim();
-                let hasResults = false;
+                let visibleRowCount = 0;
 
-                produtoRows.forEach(row => {
-                    if (row.classList.contains('no-results')) return;
+                Array.from(produtosTableBody.children).forEach(row => {
+                    if (row.id === 'noResultsRow') return; // Ignora a linha de "nenhum resultado"
 
                     const produtoNome = row.getAttribute('data-nome');
                     const produtoMarca = row.getAttribute('data-marca');
@@ -416,57 +420,57 @@
                     const marcaElement = row.querySelector('.produto-marca');
                     const fornecedorElement = row.querySelector('.produto-fornecedor');
 
-                    const nomeOriginal = nomeElement.textContent;
-                    const marcaOriginal = marcaElement.textContent;
-                    const fornecedorOriginal = fornecedorElement.textContent;
+                    // Armazena o conteúdo original para poder restaurá-lo
+                    const nomeOriginal = nomeElement.dataset.originalContent || nomeElement.textContent;
+                    const marcaOriginal = marcaElement.dataset.originalContent || marcaElement.textContent;
+                    const fornecedorOriginal = fornecedorElement.dataset.originalContent || fornecedorElement.textContent;
 
-                    // Remove highlights anteriores
+                    // Guarda o conteúdo original se ainda não estiver guardado
+                    if (!nomeElement.dataset.originalContent) {
+                        nomeElement.dataset.originalContent = nomeOriginal;
+                        marcaElement.dataset.originalContent = marcaOriginal;
+                        fornecedorElement.dataset.originalContent = fornecedorOriginal;
+                    }
+
+                    // Restaura o conteúdo original para remover destaques anteriores
                     nomeElement.innerHTML = nomeOriginal;
                     marcaElement.innerHTML = marcaOriginal;
                     fornecedorElement.innerHTML = fornecedorOriginal;
 
+
                     if (searchTerm === '') {
                         row.style.display = '';
-                        hasResults = true;
-                    } else if (produtoNome.includes(searchTerm) ||
+                        visibleRowCount++;
+                    } else if (
+                        produtoNome.includes(searchTerm) ||
                         produtoMarca.includes(searchTerm) ||
-                        produtoFornecedor.includes(searchTerm)) {
+                        produtoFornecedor.includes(searchTerm)
+                    ) {
                         row.style.display = '';
-                        hasResults = true;
+                        visibleRowCount++;
 
-                        // Destacar o texto correspondente em todos os campos
                         const regex = new RegExp(searchTerm, 'gi');
 
-                        nomeElement.innerHTML = nomeOriginal.replace(regex, match =>
-                            `<span class="highlight">${match}</span>`
-                        );
+                        // Aplica destaque se o termo de pesquisa estiver na célula
+                        if (nomeOriginal.toLowerCase().includes(searchTerm)) {
+                            nomeElement.innerHTML = nomeOriginal.replace(regex, match => `<span class="highlight">${match}</span>`);
+                        }
+                        if (marcaOriginal.toLowerCase().includes(searchTerm)) {
+                            marcaElement.innerHTML = marcaOriginal.replace(regex, match => `<span class="highlight">${match}</span>`);
+                        }
+                        if (fornecedorOriginal.toLowerCase().includes(searchTerm)) {
+                            fornecedorElement.innerHTML = fornecedorOriginal.replace(regex, match => `<span class="highlight">${match}</span>`);
+                        }
 
-                        marcaElement.innerHTML = marcaOriginal.replace(regex, match =>
-                            produtoMarca.includes(searchTerm) ? `<span class="highlight">${match}</span>` : match
-                        );
-
-                        fornecedorElement.innerHTML = fornecedorOriginal.replace(regex, match =>
-                            produtoFornecedor.includes(searchTerm) ? `<span class="highlight">${match}</span>` : match
-                        );
                     } else {
                         row.style.display = 'none';
                     }
                 });
 
-                // Mostrar mensagem se não houver resultados
-                const noResults = document.querySelector('.no-results');
-                const tbody = document.getElementById('produtosTableBody');
-
-                if (!hasResults) {
-                    if (!noResults) {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = '<td colspan="6" class="no-results">Nenhum produto encontrado.</td>';
-                        tbody.appendChild(tr);
-                    } else if (noResults.parentNode.style.display === 'none') {
-                        noResults.parentNode.style.display = '';
-                    }
-                } else if (noResults) {
-                    noResults.parentNode.style.display = 'none';
+                if (visibleRowCount === 0) {
+                    noResultsRow.style.display = '';
+                } else {
+                    noResultsRow.style.display = 'none';
                 }
             });
         });
