@@ -25,7 +25,7 @@
             display: flex;
             align-items: center;
             padding: 15px 25px;
-            background: #11114e;
+            background: #E08C27; /* Laranja */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
@@ -48,7 +48,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF; /* Branco (cor das linhas do hambúrguer quando fechado) */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -62,7 +62,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF; /* Branco (cor das linhas do hambúrguer quando fechado) */
             position: absolute;
             left: 0;
             transition: all 0.3s ease;
@@ -77,22 +77,22 @@
         }
 
         .hamburger-menu.active .hamburger-icon {
-            background: transparent;
+            background: transparent; /* A linha do meio some para formar o X */
         }
 
         .hamburger-menu.active .hamburger-icon:before {
             transform: translateY(8px) rotate(45deg);
-            background: #e74c3c;
+            background: #FFFFFF; /* Branco (cor do X quando o menu está aberto) */
         }
 
         .hamburger-menu.active .hamburger-icon:after {
             transform: translateY(-8px) rotate(-45deg);
-            background: #e74c3c;
+            background: #FFFFFF; /* Branco (cor do X quando o menu está aberto) */
         }
 
         /* Título ajustado */
         .page-title {
-            color: #ecf0f1;
+            color: #FFFFFF; /* Branco */
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -111,7 +111,7 @@
             left: -300px;
             width: 250px;
             height: 100vh;
-            background: #1a3775;
+            background: #0E7F1B; /* Verde */
             transition: left 0.4s ease;
             z-index: 5;
             padding-top: 80px;
@@ -132,7 +132,7 @@
         }
 
         .nav-menu a {
-            color: #ecf0f1;
+            color: #FFFFFF; /* Branco */
             text-decoration: none;
             font-size: 1.1rem;
             transition: color 0.3s;
@@ -142,7 +142,7 @@
         }
 
         .nav-menu a:hover {
-            color: #3498db;
+            color: #E08C27; /* Laranja */
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -198,8 +198,8 @@
         }
 
         button[type="submit"] {
-            background: #11114e;
-            color: white;
+            background: #E08C27; /* Laranja */
+            color: #FFFFFF; /* Branco */
             border: none;
             padding: 12px 15px;
             width: 100%;
@@ -211,7 +211,7 @@
         }
 
         button[type="submit"]:hover {
-            background: #1a3775;
+            background: #FF9B33; /* Um tom mais claro de Laranja para o hover */
         }
 
         .alert {
@@ -272,8 +272,7 @@
         datalist option:active {
             background-color: #f0f0f0;
             /* Cor de fundo ao passar o mouse/selecionar */
-            color: #11114e;
-            /* Cor do texto ao passar o mouse */
+            color: #0E7F1B; /* Verde */
         }
     </style>
 </head>
@@ -453,15 +452,15 @@
 
                     if (data.success && data.produto) {
                         nomeStockInfo.textContent = `Estoque disponível: ${data.produto.estoque}`;
-                        nomeStockInfo.style.color = data.produto.estoque < 10 ? '#e74c3c' : '#27ae60';
+                        nomeStockInfo.style.color = data.produto.estoque < 10 ? '#E08C27' : '#0E7F1B'; /* Laranja para baixo estoque, Verde para suficiente */
                     } else {
                         nomeStockInfo.textContent = 'Produto não encontrado ou sem estoque.';
-                        nomeStockInfo.style.color = '#e74c3c';
+                        nomeStockInfo.style.color = '#E08C27'; /* Laranja */
                     }
                 } catch (error) {
                     console.error('Erro ao buscar estoque:', error);
                     nomeStockInfo.textContent = 'Erro ao verificar estoque.';
-                    nomeStockInfo.style.color = '#e74c3c';
+                    nomeStockInfo.style.color = '#E08C27'; /* Laranja */
                 }
             }
 

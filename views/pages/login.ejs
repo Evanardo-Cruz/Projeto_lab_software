@@ -14,8 +14,8 @@
         }
 
         body {
-            background-color: #11114e;
-            /* Cor de fundo suave */
+            background-color: #E08C27;
+            /* Laranja */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,13 +24,13 @@
         }
 
         #div-login-container {
-            background-color: white;
+            background-color: #FFFFFF;
+            /* Branco */
             border-radius: 18px;
             width: 100%;
             max-width: 500px;
             padding: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            /* Sombra suave para dar profundidade */
             text-align: center;
         }
 
@@ -38,10 +38,8 @@
             font-weight: normal;
             font-size: 36px;
             color: #333;
-            /* Cor mais suave para o texto */
             letter-spacing: 2px;
             margin-bottom: 20px;
-            /* Espaço entre o título e o formulário */
         }
 
         form {
@@ -56,19 +54,19 @@
             margin-bottom: 20px;
             font-size: 16px;
             color: #333;
-            /* Cor do texto dentro dos inputs */
             background-color: #f9f9f9;
-            /* Cor de fundo suave para os inputs */
         }
 
         .input-1:focus {
-            border-color: #1166de;
+            border-color: #0E7F1B;
+            /* Verde */
             outline: none;
         }
 
         #btn-logar {
             padding: 12px 24px;
-            background-color: #1166de;
+            background-color: #0E7F1B;
+            /* Verde */
             color: white;
             font-size: 18px;
             font-weight: bold;
@@ -79,7 +77,8 @@
         }
 
         #btn-logar:hover {
-            background-color: #0d1ed8;
+            background-color: #0B6B15;
+            /* Um verde um pouco mais escuro para o hover */
             transform: scale(1.05);
         }
 
@@ -95,32 +94,7 @@
             background-color: rgba(255, 0, 0, 50%);
             margin-top: 15px;
             width: 80%;
-            height: 30px;
-            border-radius: 10px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        #text-modal {
-            font-size: 20px;
-            font-weight: 400;
-        }
-
-        #link {
-            margin-top: 15px;
-            width: 100%;
-            text-align: left;
-        }
-
-        #modal {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(255, 0, 0, 50%);
-            margin-top: 15px;
-            width: 80%;
             height: 50px;
-            /* Aumentei a altura */
             border-radius: 10px;
             margin-left: auto;
             margin-right: auto;
@@ -130,7 +104,12 @@
             font-size: 20px;
             font-weight: 400;
             color: rgb(0, 0, 0);
-            /* Adicionei cor branca para melhor contraste */
+        }
+
+        #link {
+            margin-top: 15px;
+            width: 100%;
+            text-align: left;
         }
 
         /* Responsividade */
@@ -149,10 +128,8 @@
 
 <body>
     <div id="div-login-container">
-        <!-- Título "LOGIN" acima da caixa de dados -->
         <h1 id="h1-login">Login</h1>
 
-        <!-- Formulário de login -->
         <form action="/login" method="POST">
             <div>
                 <div class="label"><label for="email">E-MAIL:</label></div>

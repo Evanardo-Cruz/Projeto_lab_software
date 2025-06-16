@@ -15,7 +15,7 @@
         }
 
         body {
-            background: #f5f7fa;
+            background: #f5f7fa; /* Mantido um cinza claro para o corpo */
             overflow-x: hidden;
         }
 
@@ -24,7 +24,7 @@
             display: flex;
             align-items: center;
             padding: 15px 25px;
-            background: #11114e;
+            background: #E08C27; /* LARANJA */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
@@ -47,7 +47,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF; /* BRANCO */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -61,7 +61,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF; /* BRANCO */
             position: absolute;
             left: 0;
             transition: all 0.3s ease;
@@ -81,17 +81,17 @@
 
         .hamburger-menu.active .hamburger-icon:before {
             transform: translateY(8px) rotate(45deg);
-            background: #e74c3c;
+            background: #e74c3c; /* Mantido vermelho para indicar ação */
         }
 
         .hamburger-menu.active .hamburger-icon:after {
             transform: translateY(-8px) rotate(-45deg);
-            background: #e74c3c;
+            background: #e74c3c; /* Mantido vermelho para indicar ação */
         }
 
         /* Título */
         .page-title {
-            color: #ecf0f1;
+            color: #FFFFFF; /* BRANCO */
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -107,7 +107,7 @@
         .search-container {
             display: flex;
             align-items: center;
-            background: #34495e;
+            background: #dcdcdc; /* Um tom de cinza mais claro */
             border-radius: 30px;
             padding: 5px 15px;
             transition: all 0.3s;
@@ -115,13 +115,13 @@
         }
 
         .search-container:focus-within {
-            box-shadow: 0 0 0 2px #3498db;
+            box-shadow: 0 0 0 2px #E08C27; /* LARANJA */
         }
 
         .search-input {
             border: none;
             background: transparent;
-            color: #ecf0f1;
+            color: #333333; /* Texto escuro para contraste */
             padding: 8px;
             width: 180px;
             outline: none;
@@ -129,7 +129,7 @@
         }
 
         .search-input::placeholder {
-            color: #bdc3c7;
+            color: #888888; /* Placeholder em cinza médio */
         }
 
         .search-button {
@@ -146,7 +146,7 @@
             width: 18px;
             height: 18px;
             fill: none;
-            stroke: #ecf0f1;
+            stroke: #333333; /* Ícone escuro para contraste */
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -159,7 +159,7 @@
             left: -300px;
             width: 250px;
             height: 100vh;
-            background: #1a3775;
+            background: #0E7F1B; /* VERDE */
             transition: left 0.4s ease;
             z-index: 5;
             padding-top: 80px;
@@ -180,7 +180,7 @@
         }
 
         .nav-menu a {
-            color: #ecf0f1;
+            color: #FFFFFF; /* BRANCO */
             text-decoration: none;
             font-size: 1.1rem;
             transition: color 0.3s;
@@ -190,7 +190,7 @@
         }
 
         .nav-menu a:hover {
-            color: #3498db;
+            color: #E08C27; /* LARANJA no hover */
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -228,7 +228,7 @@
         }
 
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #e0e0e0; /* Um cinza mais claro no hover da linha */
         }
 
         /* Estilos para o toast de notificação */
@@ -237,7 +237,7 @@
             bottom: 20px;
             right: 20px;
             background: #333;
-            color: white;
+            color: #FFFFFF; /* BRANCO */
             padding: 10px 20px;
             border-radius: 4px;
             opacity: 0;
@@ -266,17 +266,14 @@
 <body>
     <header>
         <div class="header-container">
-            <!-- Menu Hambúrguer -->
             <button class="hamburger-menu" aria-label="Abrir menu">
                 <span class="hamburger-icon"></span>
             </button>
 
-            <!-- Título -->
             <h1 class="page-title">GERENCIAMENTO DE USUÁRIOS</h1>
         </div>
     </header>
 
-    <!-- Menu de Navegação Lateral -->
     <nav class="nav-menu">
         <ul>
             <li><a href="/inicio">Início</a></li>
@@ -288,16 +285,13 @@
         </ul>
     </nav>
 
-    <!-- Overlay para fechar o menu -->
     <div class="overlay"></div>
 
-    <!-- Conteúdo principal -->
     <main style="margin-left: 20px; margin-right: 20px; padding-top: 20px;">
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
-                    <tr style="background-color: #11114e; color: white;">
-                        <th style="padding: 12px; text-align: left;">ID</th>
+                    <tr style="background-color: #E08C27; color: white;"> <th style="padding: 12px; text-align: left;">ID</th>
                         <th style="padding: 12px; text-align: left;">E-mail</th>
                         <th style="padding: 12px; text-align: left;">Nível de Acesso</th>
                         <th style="padding: 12px; text-align: left;">Data de Cadastro</th>
@@ -321,7 +315,7 @@
                             </td>
                             <td style="padding: 12px;">
                                 <button class="edit-btn" data-id="<%= usuario.id %>"
-                                    style="background-color: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Editar</button>
+                                    style="background-color: #0E7F1B; color: #FFFFFF; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Editar</button>
                             </td>
                         </tr>
                         <% }); %>
@@ -330,7 +324,6 @@
         </div>
     </main>
 
-    <!-- Modal para edição de usuário -->
     <div id="edit-user-modal"
         style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
         <h2>Editar Usuário</h2>
@@ -358,12 +351,11 @@
                 <button type="button" id="cancel-edit"
                     style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancelar</button>
                 <button type="submit"
-                    style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Salvar</button>
+                    style="background: #0E7F1B; color: #FFFFFF; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Salvar</button>
             </div>
         </form>
     </div>
 
-    <!-- Modal para confirmação de exclusão -->
     <div id="delete-user-modal"
         style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
         <h2>Confirmar Exclusão</h2>
@@ -372,16 +364,14 @@
             <button id="cancel-delete"
                 style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancelar</button>
             <button id="confirm-delete"
-                style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Confirmar</button>
+                style="background: #0E7F1B; color: #FFFFFF; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Confirmar</button>
         </div>
     </div>
 
-    <!-- Overlay para modais -->
     <div id="modal-overlay"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;">
     </div>
 
-    <!-- Toast para notificações -->
     <div id="toast" class="toast"></div>
 
     <script>
@@ -398,7 +388,7 @@
             const confirmDeleteBtn = document.querySelector('#confirm-delete');
             const toast = document.querySelector('#toast');
 
-            // Função para mostrar notificação toast
+            // Função para mostrar notificação toast  
             function showToast(message, duration = 3000) {
                 toast.textContent = message;
                 toast.classList.add('show');
@@ -407,7 +397,7 @@
                 }, duration);
             }
 
-            // Função para abrir/fechar o menu hamburguer
+            // Função para abrir/fechar o menu hamburguer  
             hamburgerMenu.addEventListener('click', function () {
                 this.classList.toggle('active');
                 navMenu.classList.toggle('active');
@@ -430,7 +420,7 @@
                 });
             });
 
-            // Função para abrir o modal de edição
+            // Função para abrir o modal de edição  
             function openEditModal(user) {
                 document.querySelector('#edit-user-id').value = user.id;
                 document.querySelector('#edit-email').value = user.email;
@@ -440,32 +430,32 @@
                 modalOverlay.style.display = 'block';
             }
 
-            // Função para fechar o modal de edição
+            // Função para fechar o modal de edição  
             function closeEditModal() {
                 editModal.style.display = 'none';
                 modalOverlay.style.display = 'none';
             }
 
-            // Função para abrir o modal de exclusão
+            // Função para abrir o modal de exclusão  
             function openDeleteModal(userId) {
                 document.querySelector('#delete-user-id').textContent = userId;
                 deleteModal.style.display = 'block';
                 modalOverlay.style.display = 'block';
             }
 
-            // Função para fechar o modal de exclusão
+            // Função para fechar o modal de exclusão  
             function closeDeleteModal() {
                 deleteModal.style.display = 'none';
                 modalOverlay.style.display = 'none';
             }
 
-            // Evento para cancelar edição
+            // Evento para cancelar edição  
             cancelEditBtn.addEventListener('click', closeEditModal);
 
-            // Evento para cancelar exclusão
+            // Evento para cancelar exclusão  
             cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 
-            // Event listeners para botões de editar
+            // Event listeners para botões de editar  
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', async function () {
                     const userId = this.getAttribute('data-id');
@@ -487,7 +477,7 @@
                 });
             });
 
-            // Evento para salvar alterações
+            // Evento para salvar alterações  
             editForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const userId = document.querySelector('#edit-user-id').value;
@@ -517,7 +507,7 @@
                 }
             });
 
-            // Event listeners para botões de excluir
+            // Event listeners para botões de excluir  
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function () {
                     const userId = this.getAttribute('data-id');
@@ -525,7 +515,7 @@
                 });
             });
 
-            // Evento para confirmar exclusão
+            // Evento para confirmar exclusão  
             confirmDeleteBtn.addEventListener('click', async function () {
                 const userId = document.querySelector('#delete-user-id').textContent;
                 try {

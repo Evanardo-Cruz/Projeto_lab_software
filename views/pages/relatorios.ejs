@@ -25,7 +25,8 @@
             display: flex;
             align-items: center;
             padding: 15px 25px;
-            background: #11114e;
+            background: #E08C27;
+            /* Laranja */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
@@ -48,7 +49,8 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF;
+            /* Branco (cor das linhas do hambúrguer quando fechado) */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -62,7 +64,8 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF;
+            /* Branco (cor das linhas do hambúrguer quando fechado) */
             position: absolute;
             left: 0;
             transition: all 0.3s ease;
@@ -82,17 +85,20 @@
 
         .hamburger-menu.active .hamburger-icon:before {
             transform: translateY(8px) rotate(45deg);
-            background: #e74c3c;
+            background: #FFFFFF;
+            /* Branco (cor do X quando o menu está aberto) */
         }
 
         .hamburger-menu.active .hamburger-icon:after {
             transform: translateY(-8px) rotate(-45deg);
-            background: #e74c3c;
+            background: #FFFFFF;
+            /* Branco (cor do X quando o menu está aberto) */
         }
 
         /* Título ajustado */
         .page-title {
-            color: #ecf0f1;
+            color: #FFFFFF;
+            /* Branco */
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -160,7 +166,8 @@
             left: -300px;
             width: 250px;
             height: 100vh;
-            background: #1a3775;
+            background: #0E7F1B;
+            /* Verde */
             transition: left 0.4s ease;
             z-index: 5;
             padding-top: 80px;
@@ -191,7 +198,8 @@
         }
 
         .nav-menu a:hover {
-            color: #3498db;
+            color: #E08C27;
+            /* Laranja */
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -229,7 +237,8 @@
         }
 
         .report-title {
-            color: #11114e;
+            color: #0E7F1B;
+            /* Verde */
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
@@ -242,7 +251,8 @@
         }
 
         .table th {
-            background-color: #11114e;
+            background-color: #0E7F1B;
+            /* Verde */
             color: white;
             padding: 16px;
             font-weight: 500;
@@ -254,14 +264,18 @@
         }
 
         .badge-primary {
-            background-color: #11114e;
+            background-color: #0E7F1B !important;
+            /* Verde com !important para sobrescrever Bootstrap */
             font-size: 0.9rem;
             padding: 8px 14px;
             border-radius: 12px;
+            color: #FFFFFF;
+            /* Para garantir que o texto dentro do badge seja branco */
         }
 
         .highlight-card {
-            border-left: 4px solid #11114e;
+            border-left: 4px solid #0E7F1B;
+            /* Verde */
             transition: all 0.3s;
             margin-bottom: 40px;
             background-color: #fff;
@@ -296,18 +310,15 @@
 <body>
     <header>
         <div class="header-container">
-            <!-- Menu Hambúrguer -->
             <button class="hamburger-menu" aria-label="Abrir menu">
                 <span class="hamburger-icon"></span>
             </button>
 
-            <!-- Título "ESTOQUE" -->
             <h1 class="page-title">Relatórios</h1>
 
         </div>
     </header>
 
-    <!-- Menu de Navegação Lateral -->
     <nav class="nav-menu">
         <ul>
             <li><a href="/inicio">Início</a></li>
@@ -319,12 +330,10 @@
         </ul>
     </nav>
 
-    <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
     <main class="main-content">
         <div class="container">
-            <!-- Seção de destaques -->
             <div class="row mb-5">
                 <div class="col-md-4">
                     <div class="card highlight-card h-100">
@@ -411,7 +420,6 @@
                 </div>
             </div>
 
-            <!-- Histórico de saídas -->
             <div class="report-section">
                 <h2 class="report-title">Histórico de Saídas Recentes</h2>
                 <div class="table-responsive">

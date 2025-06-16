@@ -25,7 +25,8 @@
             display: flex;
             align-items: center;
             padding: 15px 25px;
-            background: #11114e;
+            background: #E08C27;
+            /* Laranja */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
@@ -48,7 +49,8 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF;
+            /* Branco */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -62,7 +64,8 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF;
+            /* Branco */
             position: absolute;
             left: 0;
             transition: all 0.3s ease;
@@ -82,17 +85,18 @@
 
         .hamburger-menu.active .hamburger-icon:before {
             transform: translateY(8px) rotate(45deg);
-            background: #e74c3c;
+            background: #FFFFFF; /* Branco (cor do X quando o menu está aberto) */
         }
 
         .hamburger-menu.active .hamburger-icon:after {
             transform: translateY(-8px) rotate(-45deg);
-            background: #e74c3c;
+            background: #FFFFFF; /* Branco (cor do X quando o menu está aberto) */
         }
 
         /* Título ajustado */
         .page-title {
-            color: #ecf0f1;
+            color: #FFFFFF;
+            /* Branco */
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -104,54 +108,8 @@
             width: max-content;
         }
 
-        /* Barra de Pesquisa - Posicionada à direita */
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: #34495e;
-            border-radius: 30px;
-            padding: 5px 15px;
-            transition: all 0.3s;
-            margin-left: auto;
-        }
-
-        .search-container:focus-within {
-            box-shadow: 0 0 0 2px #3498db;
-        }
-
-        .search-input {
-            border: none;
-            background: transparent;
-            color: #ecf0f1;
-            padding: 8px;
-            width: 180px;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .search-input::placeholder {
-            color: #bdc3c7;
-        }
-
-        .search-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-icon {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: #ecf0f1;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+        /* Barra de Pesquisa - Removida deste layout */
+        /* .search-container { } */
 
         /* Menu de Navegação - Agora como menu lateral */
         .nav-menu {
@@ -160,7 +118,8 @@
             left: -300px;
             width: 250px;
             height: 100vh;
-            background: #1a3775;
+            background: #0E7F1B;
+            /* Verde */
             transition: left 0.4s ease;
             z-index: 5;
             padding-top: 80px;
@@ -181,7 +140,8 @@
         }
 
         .nav-menu a {
-            color: #ecf0f1;
+            color: #FFFFFF;
+            /* Branco */
             text-decoration: none;
             font-size: 1.1rem;
             transition: color 0.3s;
@@ -191,7 +151,8 @@
         }
 
         .nav-menu a:hover {
-            color: #3498db;
+            color: #E08C27;
+            /* Laranja no hover */
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -249,9 +210,11 @@
         .main-content input[type="text"]:focus,
         .main-content input[type="number"]:focus,
         .main-content textarea:focus {
-            border-color: #3498db;
+            border-color: #E08C27;
+            /* Laranja para foco */
             outline: none;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            box-shadow: 0 0 5px rgba(224, 140, 39, 0.5);
+            /* Sombra laranja */
         }
 
         .main-content textarea {
@@ -263,7 +226,8 @@
             display: block;
             width: 100%;
             padding: 12px;
-            background-color: #11114e;
+            background-color: #E08C27;
+            /* Laranja */
             color: white;
             border: none;
             border-radius: 5px;
@@ -274,7 +238,8 @@
         }
 
         .btn-submit:hover {
-            background-color: #1a3775;
+            background-color: #cc7a1e;
+            /* Laranja um pouco mais escuro no hover */
         }
 
         .price-container {
@@ -318,8 +283,10 @@
         /* Estilo para o foco - igual aos outros inputs */
         input[type="date"]:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: #E08C27;
+            /* Laranja para foco */
+            box-shadow: 0 0 0 2px rgba(224, 140, 39, 0.2);
+            /* Sombra laranja */
         }
 
         /* Estilo para o ícone do calendário */
@@ -348,18 +315,15 @@
 <body>
     <header>
         <div class="header-container">
-            <!-- Menu Hambúrguer -->
             <button class="hamburger-menu" aria-label="Abrir menu">
                 <span class="hamburger-icon"></span>
             </button>
 
-            <!-- Título "CADASTRO DE PRODUTOS" -->
             <h1 class="page-title">CADASTRO DE PRODUTOS</h1>
 
         </div>
     </header>
 
-    <!-- Menu de Navegação Lateral -->
     <nav class="nav-menu">
         <ul>
             <li><a href="/inicio">Início</a></li>
@@ -368,8 +332,8 @@
             <% if (currentUser && currentUser.nivel_acesso === 'administrador') { %>
                 <li><a href="/relatorios">Relatórios de Estoque</a></li>
                 <li><a href="/gerenciar-usuarios">Gerenciar Usuário</a></li>
-            <% } %>
-            <li><a href="/cadastro">Sair da Conta</a></li>
+                <% } %>
+                    <li><a href="/cadastro">Sair da Conta</a></li>
         </ul>
     </nav>
 
@@ -410,7 +374,6 @@
         </form>
     </main>
 
-    <!-- Modal de sucesso -->
     <div class="modal fade" id="sucessoModal" tabindex="-1" aria-labelledby="sucessoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -428,7 +391,6 @@
         </div>
     </div>
 
-    <!-- Overlay para fechar o menu ao clicar fora -->
     <div class="overlay"></div>
 
 
@@ -512,7 +474,6 @@
                 }
             });
         });
-
     </script>
 </body>
 

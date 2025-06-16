@@ -1,9 +1,11 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const pool = require('./database'); // Certifique-se de que este caminho está correto
 const bcrypt = require('bcrypt');
 const session = require('express-session'); // Importa express-session
 
+app.use(express.static(path.join(__dirname, 'public')));
 // Configuração especial para datas do PostgreSQL
 const { types } = require('pg');
 

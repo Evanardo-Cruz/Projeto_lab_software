@@ -24,7 +24,7 @@
             display: flex;
             align-items: center;
             padding: 15px 25px;
-            background: #11114e;
+            background: #E08C27; /* Laranja */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
@@ -47,7 +47,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF; /* Branco */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -61,7 +61,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #ecf0f1;
+            background: #FFFFFF; /* Branco */
             position: absolute;
             left: 0;
             transition: all 0.3s ease;
@@ -81,17 +81,17 @@
 
         .hamburger-menu.active .hamburger-icon:before {
             transform: translateY(8px) rotate(45deg);
-            background: #e74c3c;
+            background: #FFFFFF; /* Branco (cor do X quando o menu está aberto) */
         }
 
         .hamburger-menu.active .hamburger-icon:after {
             transform: translateY(-8px) rotate(-45deg);
-            background: #e74c3c;
+            background: #FFFFFF; /* Branco (cor do X quando o menu está aberto) */
         }
 
         /* Título ajustado */
         .page-title {
-            color: #ecf0f1;
+            color: #FFFFFF; /* Branco */
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -107,7 +107,7 @@
         .search-container {
             display: flex;
             align-items: center;
-            background: #34495e;
+            background: #0E7F1B; /* Verde */
             border-radius: 30px;
             padding: 5px 15px;
             transition: all 0.3s;
@@ -115,13 +115,13 @@
         }
 
         .search-container:focus-within {
-            box-shadow: 0 0 0 2px #3498db;
+            box-shadow: 0 0 0 2px #E08C27; /* Laranja para foco */
         }
 
         .search-input {
             border: none;
             background: transparent;
-            color: #ecf0f1;
+            color: #FFFFFF; /* Branco */
             padding: 8px;
             width: 180px;
             outline: none;
@@ -129,7 +129,7 @@
         }
 
         .search-input::placeholder {
-            color: #bdc3c7;
+            color: #f0f0f0; /* Um branco mais suave para o placeholder */
         }
 
         .search-button {
@@ -146,7 +146,7 @@
             width: 18px;
             height: 18px;
             fill: none;
-            stroke: #ecf0f1;
+            stroke: #FFFFFF; /* Branco */
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -159,7 +159,7 @@
             left: -300px;
             width: 250px;
             height: 100vh;
-            background: #1a3775;
+            background: #0E7F1B; /* Verde */
             transition: left 0.4s ease;
             z-index: 5;
             padding-top: 80px;
@@ -180,7 +180,7 @@
         }
 
         .nav-menu a {
-            color: #ecf0f1;
+            color: #FFFFFF; /* Branco */
             text-decoration: none;
             font-size: 1.1rem;
             transition: color 0.3s;
@@ -190,7 +190,7 @@
         }
 
         .nav-menu a:hover {
-            color: #3498db;
+            color: #E08C27; /* Laranja no hover */
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -236,7 +236,7 @@
         }
 
         .products-table th {
-            background-color: #11114e;
+            background-color: #E08C27; /* Laranja */
             color: white;
             font-weight: 600;
             position: sticky;
@@ -262,12 +262,12 @@
         }
 
         .quantidade-low {
-            color: #e74c3c;
+            color: #e74c3c; /* Mantido para indicar baixa quantidade */
             font-weight: bold;
         }
 
         .quantidade-normal {
-            color: #27ae60;
+            color: #0E7F1B; /* Verde */
         }
 
         .uppercase-input {
